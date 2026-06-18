@@ -474,6 +474,18 @@
         <div class="space-y-4">
           <p class="text-slate-400 text-sm">Convierte tus ideas prioritarias en experimentos con hipótesis científicas.</p>
 
+          <!-- Instrucciones -->
+          <div class="bg-dmente-teal/10 border border-dmente-teal/20 p-3 rounded-xl text-xs text-dmente-teal">
+            <span class="font-bold">📝 Cómo crear un test:</span>
+            <ol class="list-decimal list-inside mt-2 text-slate-300 space-y-1">
+              <li>Selecciona una idea del banco (de los pasos anteriores)</li>
+              <li>Escribe la hipótesis: "Si... entonces... porque..."</li>
+              <li>Define qué métrica medirás (Ej: Tasa conversión, Bounce rate)</li>
+              <li>Especifica duración y responsable</li>
+              <li>Click "🚀 Crear Experimento"</li>
+            </ol>
+          </div>
+
           <!-- Formulario para crear test -->
           <form onsubmit="event.preventDefault(); const ideaId = document.getElementById('testIdeaId').value; const hypothesis = document.getElementById('testHypothesis').value; const metric = document.getElementById('testMetric').value; const duration = document.getElementById('testDuration').value; const responsible = document.getElementById('testResponsible').value; addTest(ideaId, hypothesis, metric, duration, responsible); document.getElementById('testIdeaId').value = ''; document.getElementById('testHypothesis').value = ''; document.getElementById('testMetric').value = ''; document.getElementById('testDuration').value = '7 días'; document.getElementById('testResponsible').value = '';" class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20 space-y-4">
 
@@ -596,14 +608,110 @@
       `;
     }
 
+    function updateTestResult(id, field, value) {
+      const test = state.tests.find(t => t.id === id);
+      if (test) {
+        test[field] = value;
+        render();
+      }
+    }
+
     function renderStep6() {
+      const finalized = state.tests.filter(t => t.status === 'Finalizado');
+      const validated = finalized.filter(t => t.validated === 'validated').length;
+      const refuted = finalized.filter(t => t.validated === 'refuted').length;
+
       return `
         <div class="space-y-4">
-          <p class="text-slate-400 text-sm">Valida resultados y toma decisiones estratégicas.</p>
-          <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20">
-            <p class="text-xs text-slate-300">Tests totales: ${state.tests.length}</p>
-            <p class="text-xs text-slate-300">Finalizados: ${state.tests.filter(t => t.status === 'Finalizado').length}</p>
+          <p class="text-slate-400 text-sm">Registra resultados, valida/refuta hipótesis y toma decisiones estratégicas.</p>
+
+          <!-- Resumen de Resultados -->
+          <div class="grid grid-cols-3 gap-3">
+            <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20 text-center">
+              <div class="text-xs text-slate-400 mb-1">Total Finalizados</div>
+              <div class="text-2xl font-bold text-dmente-teal">${finalized.length}</div>
+            </div>
+            <div class="bg-dmente-deep/60 p-3 rounded-xl border border-emerald-500/30 text-center">
+              <div class="text-xs text-slate-400 mb-1">✅ Validados</div>
+              <div class="text-2xl font-bold text-emerald-400">${validated}</div>
+            </div>
+            <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-magenta/30 text-center">
+              <div class="text-xs text-slate-400 mb-1">❌ Refutados</div>
+              <div class="text-2xl font-bold text-dmente-magenta">${refuted}</div>
+            </div>
           </div>
+
+          <!-- Lista de Tests para Analizar -->
+          ${finalized.length === 0 ? `
+            <div class="bg-dmente-deep/40 border border-dashed border-dmente-emerald/20 p-12 rounded-xl text-center text-slate-500 text-sm">
+              No hay tests finalizados. Mueve tests a "Finalizado" en el Paso 5 para analizarlos aquí.
+            </div>
+          ` : `
+            <div class="space-y-3 max-h-96 overflow-y-auto">
+              ${finalized.map(test => {
+                const idea = state.ideas.find(i => i.id === test.ideaId);
+                return `
+                  <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20 space-y-3">
+
+                    <!-- Encabezado -->
+                    <div>
+                      <div class="text-sm font-bold text-dmente-white mb-1">Test #${test.id.toString().slice(-4)} - ${idea ? idea.title : 'Idea'}</div>
+                      <p class="text-xs text-slate-400 italic">"${test.hypothesis}"</p>
+                    </div>
+
+                    <!-- Resultado Numérico -->
+                    <div>
+                      <label class="block text-xs font-semibold text-slate-300 mb-1">Resultado Obtenido</label>
+                      <input
+                        type="text"
+                        value="${test.result}"
+                        onchange="updateTestResult(${test.id}, 'result', this.value)"
+                        placeholder="Ej: +18% conversión, -5% bounce rate"
+                        class="w-full bg-dmente-deep border border-dmente-emerald/20 focus:border-dmente-teal rounded-lg p-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-dmente-teal text-dmente-white"
+                      />
+                    </div>
+
+                    <!-- Validación de Hipótesis -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">¿Hipótesis Validada?</label>
+                        <select
+                          value="${test.validated || ''}"
+                          onchange="updateTestResult(${test.id}, 'validated', this.value || null)"
+                          class="w-full bg-dmente-deep border border-dmente-emerald/20 focus:border-dmente-teal rounded-lg p-2 text-xs focus:outline-none focus:ring-1 focus:ring-dmente-teal text-dmente-white"
+                        >
+                          <option value="">-- Selecciona --</option>
+                          <option value="validated">✅ Validada (Hipótesis Correcta)</option>
+                          <option value="refuted">❌ Refutada (Hipótesis Incorrecta)</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Decisión Estratégica</label>
+                        <select
+                          value="${test.decision}"
+                          onchange="updateTestResult(${test.id}, 'decision', this.value)"
+                          class="w-full bg-dmente-deep border border-dmente-emerald/20 focus:border-dmente-teal rounded-lg p-2 text-xs focus:outline-none focus:ring-1 focus:ring-dmente-teal text-dmente-white"
+                        >
+                          <option value="">-- Elige una decisión --</option>
+                          <option value="Escalar">🚀 Escalar (Invertir más recursos)</option>
+                          <option value="Pivotar">🔄 Pivotar (Cambiar el enfoque)</option>
+                          <option value="Mantener">⏸️ Mantener (Más datos necesarios)</option>
+                          <option value="Descartar">🗑️ Descartar (No funciona)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <!-- Estado Visual -->
+                    <div class="flex items-center gap-2 text-xs pt-2 border-t border-dmente-emerald/20">
+                      ${test.validated === 'validated' ? '<span class="text-emerald-400 font-bold">✅ VALIDADO</span>' : test.validated === 'refuted' ? '<span class="text-dmente-magenta font-bold">❌ REFUTADO</span>' : '<span class="text-slate-500">⏳ Pendiente validación</span>'}
+                      ${test.decision ? `<span class="text-dmente-teal">→ ${test.decision}</span>` : ''}
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `}
         </div>
       `;
     }
