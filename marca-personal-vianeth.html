@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marca Personal - Dra. Vianeth Cartagena | Dmente Digital</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --deep-space: #061421;
+            --indigo-growth: #2bebd2;
+            --emerald-data: #156367;
+            --ghost-white: #f8f9fa;
+            --text-dark: #0a0e27;
+            --text-light: #6b7280;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: linear-gradient(135deg, var(--ghost-white) 0%, #e8eef5 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: var(--text-dark);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 70px rgba(6, 20, 33, 0.12);
+            overflow: hidden;
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(135deg, var(--deep-space) 0%, #0a1929 100%);
+            color: white;
+            padding: 70px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1" fill="rgba(43,235,210,0.1)"/></pattern></defs><rect width="1200" height="120" fill="url(%23grid)" /></svg>');
+            opacity: 0.3;
+        }
+
+        header > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-header {
+            font-size: 56px;
+            margin-bottom: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(43, 235, 210, 0.1);
+            border-radius: 12px;
+            border: 2px solid var(--indigo-growth);
+        }
+
+        header h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, var(--indigo-growth) 0%, #5dd9d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        header p {
+            font-size: 18px;
+            opacity: 0.95;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            opacity: 0.75;
+            font-weight: 400;
+        }
+
+        /* INTRO SECTION */
+        .intro {
+            padding: 60px 40px;
+            background: linear-gradient(135deg, var(--ghost-white) 0%, rgba(43, 235, 210, 0.05) 100%);
+            border-bottom: 3px solid var(--indigo-growth);
+            text-align: center;
+        }
+
+        .intro h2 {
+            color: var(--deep-space);
+            font-size: 32px;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .intro p {
+            color: var(--text-light);
+            font-size: 16px;
+            line-height: 1.8;
+            max-width: 900px;
+            margin: 0 auto;
+            font-weight: 500;
+        }
+
+        /* MAIN CONTENT - PILLARS */
+        .pillars-section {
+            padding: 80px 40px;
+            background: white;
+        }
+
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+            gap: 30px;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .pillar {
+            background: white;
+            border-radius: 16px;
+            padding: 40px 35px;
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(6, 20, 33, 0.08);
+        }
+
+        .pillar:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 50px rgba(43, 235, 210, 0.2);
+            border-color: var(--indigo-growth);
+        }
+
+        .pillar-icon {
+            font-size: 64px;
+            margin-bottom: 24px;
+            display: block;
+        }
+
+        .pillar-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--deep-space);
+            margin-bottom: 8px;
+        }
+
+        .pillar-subtitle {
+            font-size: 13px;
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+
+        .pillar-content {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 1.9;
+        }
+
+        .pillar-item {
+            margin: 14px 0;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(6, 20, 33, 0.08);
+        }
+
+        .pillar-item:last-child {
+            border-bottom: none;
+        }
+
+        .pillar-item strong {
+            color: var(--emerald-data);
+            font-weight: 600;
+        }
+
+        /* COLOR CODING FOR PILLARS */
+        .pillar-1 { border-left: 5px solid var(--indigo-growth); }
+        .pillar-1 .pillar-title { color: var(--emerald-data); }
+        .pillar-1:hover { box-shadow: 0 20px 50px rgba(21, 99, 103, 0.15); }
+
+        .pillar-2 { border-left: 5px solid var(--emerald-data); }
+        .pillar-2 .pillar-title { color: var(--emerald-data); }
+        .pillar-2:hover { box-shadow: 0 20px 50px rgba(21, 99, 103, 0.15); }
+
+        .pillar-3 { border-left: 5px solid var(--indigo-growth); }
+        .pillar-3 .pillar-title { color: var(--emerald-data); }
+        .pillar-3:hover { box-shadow: 0 20px 50px rgba(43, 235, 210, 0.15); }
+
+        .pillar-4 { border-left: 5px solid var(--emerald-data); }
+        .pillar-4 .pillar-title { color: var(--emerald-data); }
+        .pillar-4:hover { box-shadow: 0 20px 50px rgba(21, 99, 103, 0.15); }
+
+        .pillar-5 { border-left: 5px solid var(--indigo-growth); }
+        .pillar-5 .pillar-title { color: var(--emerald-data); }
+        .pillar-5:hover { box-shadow: 0 20px 50px rgba(43, 235, 210, 0.15); }
+
+        .pillar-6 { border-left: 5px solid var(--emerald-data); }
+        .pillar-6 .pillar-title { color: var(--emerald-data); }
+        .pillar-6:hover { box-shadow: 0 20px 50px rgba(21, 99, 103, 0.15); }
+
+        /* CENTRAL MESSAGE */
+        .central-message {
+            text-align: center;
+            margin: 70px 0;
+            padding: 50px;
+            background: linear-gradient(135deg, rgba(43, 235, 210, 0.08) 0%, rgba(21, 99, 103, 0.05) 100%);
+            border-radius: 16px;
+            border: 2px solid var(--indigo-growth);
+        }
+
+        .central-message h3 {
+            font-size: 32px;
+            color: var(--deep-space);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .central-message p {
+            font-size: 16px;
+            color: var(--text-light);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .central-message .highlight {
+            font-size: 26px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--emerald-data) 0%, var(--indigo-growth) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 24px;
+        }
+
+        /* FOOTER */
+        footer {
+            background: linear-gradient(135deg, var(--deep-space) 0%, #0a1929 100%);
+            color: white;
+            padding: 50px 40px;
+            text-align: center;
+        }
+
+        footer p {
+            margin: 10px 0;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        footer strong {
+            color: var(--indigo-growth);
+            font-weight: 700;
+        }
+
+        .footer-divider {
+            border-top: 1px solid rgba(43, 235, 210, 0.2);
+            margin: 20px 0;
+            padding-top: 20px;
+        }
+
+        .dmente-credit {
+            font-size: 13px;
+            opacity: 0.75;
+            margin-top: 25px;
+            font-weight: 400;
+        }
+
+        .dmente-logo {
+            display: inline-block;
+            color: var(--indigo-growth);
+            font-weight: 700;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            header {
+                padding: 50px 25px;
+            }
+
+            header h1 {
+                font-size: 36px;
+            }
+
+            .logo-header {
+                font-size: 48px;
+            }
+
+            .pillars-section {
+                padding: 50px 25px;
+            }
+
+            .pillars-grid {
+                gap: 20px;
+            }
+
+            .pillar {
+                padding: 30px 25px;
+            }
+
+            .pillar-icon {
+                font-size: 56px;
+            }
+
+            .pillar-title {
+                font-size: 20px;
+            }
+
+            .central-message {
+                padding: 35px 25px;
+                margin: 50px 0;
+            }
+
+            .central-message h3 {
+                font-size: 26px;
+            }
+
+            .intro h2 {
+                font-size: 26px;
+            }
+        }
+
+        /* ANIMATION */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pillar {
+            animation: fadeInUp 0.6s ease-out forwards;
+            opacity: 0;
+        }
+
+        .pillar:nth-child(1) { animation-delay: 0.1s; }
+        .pillar:nth-child(2) { animation-delay: 0.2s; }
+        .pillar:nth-child(3) { animation-delay: 0.3s; }
+        .pillar:nth-child(4) { animation-delay: 0.4s; }
+        .pillar:nth-child(5) { animation-delay: 0.5s; }
+        .pillar:nth-child(6) { animation-delay: 0.6s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="LOGO FINAL PNG.png" alt="Dmente Digital" style="height: 60px; margin-bottom: 20px; display: inline-block;">
+            <h1>MARCA PERSONAL</h1>
+            <p>Dra. Vianeth Cartagena</p>
+            <p class="subtitle">Especialista en Odontopediatría • Cartagena de Indias, Colombia</p>
+        </header>
+
+        <div class="intro">
+            <h2>Los 6 Pilares de tu Marca</h2>
+            <p>
+                Una marca personal sólida se construye sobre seis pilares fundamentales que trabajan en conjunto.
+                Aquí está el ecosistema completo que posiciona a la Dra. Vianeth como la odontopediatra de confianza
+                y referencia en Cartagena, diferenciándose por su enfoque preventivo y humanizado.
+            </p>
+        </div>
+
+        <div class="pillars-section">
+            <div class="pillars-grid">
+                <!-- PERSONALIDAD -->
+                <div class="pillar pillar-1">
+                    <span class="pillar-icon">😊</span>
+                    <h3 class="pillar-title">Personalidad</h3>
+                    <p class="pillar-subtitle">Descubrir qué me identifica</p>
+                    <div class="pillar-content">
+                        <div class="pillar-item"><strong>Confiable:</strong> Transmite seguridad y profesionalismo</div>
+                        <div class="pillar-item"><strong>Clara:</strong> Comunica sin jerga médica innecesaria</div>
+                        <div class="pillar-item"><strong>Empática:</strong> Entiende el miedo de padres e hijos</div>
+                    </div>
+                </div>
+
+                <!-- PROPÓSITO -->
+                <div class="pillar pillar-2">
+                    <span class="pillar-icon">🎯</span>
+                    <h3 class="pillar-title">Propósito</h3>
+                    <p class="pillar-subtitle">Definir rumbo</p>
+                    <div class="pillar-content">
+                        <div class="pillar-item"><strong>Educar:</strong> A padres sobre salud bucal infantil</div>
+                        <div class="pillar-item"><strong>Tranquilizar:</strong> Niños sin miedo al dentista</div>
+                        <div class="pillar-item"><strong>Prevenir:</strong> Problemas dentales desde temprano</div>
+                    </div>
+                </div>
+
+                <!-- PÚBLICO -->
+                <div class="pillar pillar-3">
+                    <span class="pillar-icon">👥</span>
+                    <h3 class="pillar-title">Público</h3>
+                    <p class="pillar-subtitle">Audiencia / Competencia</p>
+                    <div class="pillar-content">
+                        <div class="pillar-item"><strong>Padres:</strong> Con niños de 2-10 años</div>
+                        <div class="pillar-item"><strong>Clase:</strong> Media-alta en Cartagena</div>
+                        <div class="pillar-item"><strong>Interés:</strong> Prevención y educación dental</div>
+                    </div>
+                </div>
+
+                <!-- PRODUCTO -->
+                <div class="pillar pillar-4">
+                    <span class="pillar-icon">📦</span>
+                    <h3 class="pillar-title">Producto</h3>
+                    <p class="pillar-subtitle">Qué hago</p>
+                    <div class="pillar-content">
+                        <div class="pillar-item"><strong>Consultas:</strong> Odontopediatría especializada</div>
+                        <div class="pillar-item"><strong>Mini-cursos:</strong> Guías digitales para padres</div>
+                        <div class="pillar-item"><strong>Membresía:</strong> Club de Padres con beneficios</div>
+                    </div>
+                </div>
+
+                <!-- POSICIONAMIENTO -->
+                <div class="pillar pillar-5">
+                    <span class="pillar-icon">🏆</span>
+                    <h3 class="pillar-title">Posicionamiento</h3>
+                    <p class="pillar-subtitle">Diferenciación</p>
+                    <div class="pillar-content">
+                        <div class="pillar-item"><strong>Primera cita:</strong> Sin miedo, sin estrés</div>
+                        <div class="pillar-item"><strong>Enfoque:</strong> 100% preventivo y educativo</div>
+                        <div class="pillar-item"><strong>Valor:</strong> Educación + Confianza + Tecnología</div>
+                    </div>
+                </div>
+
+                <!-- PROMOCIÓN -->
+                <div class="pillar pillar-6">
+                    <span class="pillar-icon">📢</span>
+                    <h3 class="pillar-title">Promoción</h3>
+                    <p class="pillar-subtitle">Comunicación externa</p>
+                    <div class="pillar-content">
+                        <div class="pillar-item"><strong>Reels:</strong> 5 scripts educativos en IG/TikTok</div>
+                        <div class="pillar-item"><strong>Evento:</strong> Charla presencial octubre 2026</div>
+                        <div class="pillar-item"><strong>Comunidad:</strong> WhatsApp grupo + email marketing</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CENTRAL MESSAGE -->
+            <div class="central-message">
+                <h3>🦷 Tu Marca Personal</h3>
+                <p><strong>No es azar, es propósito.</strong></p>
+                <p>
+                    Estos 6 pilares forman un ecosistema único que diferencia a la Dra. Vianeth
+                    como la odontopediatra de confianza en Cartagena. Cada pilar refuerza los demás.
+                </p>
+                <p class="highlight">Odontopediatra Sin Miedo</p>
+            </div>
+        </div>
+
+        <footer>
+            <p><strong>Dra. Vianeth Cartagena</strong></p>
+            <p>Odontopediatra • Especialista en Primeras Citas Sin Miedo</p>
+            <p>Cartagena de Indias, Colombia 🇨🇴</p>
+            <div class="footer-divider"></div>
+            <p>📧 contacto@dravianeth.com</p>
+            <p>📱 WhatsApp: +57 [Tu número]</p>
+            <p class="dmente-credit">Desarrollado por <span class="dmente-logo">Dmente Digital</span> • 2026</p>
+            <img src="LOGO FINAL PNG.png" alt="Dmente Digital" style="height: 40px; margin-top: 20px; display: inline-block; opacity: 0.9;">
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evento Salud Dental - Dra. Vianeth Cartagena</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* HEADER */
+        header {
+            background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+
+        .logo {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            background: linear-gradient(to right, rgba(0,102,204,0.1), rgba(255,255,255,0));
+            padding: 30px 20px;
+            border-bottom: 3px solid #0066cc;
+        }
+
+        .hero h2 {
+            color: #0066cc;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .hero-text {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        /* EVENT DETAILS */
+        .event-details {
+            padding: 30px 20px;
+            background: #f8f9fa;
+        }
+
+        .detail-item {
+            display: flex;
+            margin-bottom: 20px;
+            align-items: flex-start;
+        }
+
+        .detail-icon {
+            font-size: 28px;
+            margin-right: 15px;
+            min-width: 40px;
+        }
+
+        .detail-content h3 {
+            color: #0066cc;
+            margin-bottom: 5px;
+        }
+
+        .detail-content p {
+            color: #666;
+            font-size: 15px;
+        }
+
+        /* BENEFITS */
+        .benefits {
+            padding: 30px 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .benefits h3 {
+            color: #0066cc;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .benefits ul {
+            list-style: none;
+        }
+
+        .benefits li {
+            padding: 10px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #555;
+            font-size: 15px;
+        }
+
+        .benefits li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #0066cc;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* FORM SECTION */
+        .form-section {
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #f0f7ff 0%, #e6f2ff 100%);
+            border-top: 3px solid #0066cc;
+        }
+
+        .form-section h3 {
+            color: #0066cc;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 22px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #0066cc;
+            box-shadow: 0 0 5px rgba(0,102,204,0.3);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin-bottom: 0;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0052a3;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 20px;
+            background: #333;
+            color: white;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        footer p {
+            margin-bottom: 10px;
+        }
+
+        .contact-info {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #555;
+        }
+
+        /* SUCCESS MESSAGE */
+        .success-message {
+            display: none;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 24px;
+            }
+
+            header p {
+                font-size: 16px;
+            }
+
+            .hero h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">🦷</div>
+            <h1>Salud Dental Infantil</h1>
+            <p>Charla Educativa para Padres</p>
+        </header>
+
+        <div class="hero">
+            <h2>¿Tu hijo tiene miedo al dentista? ¿Dudas sobre su higiene?</h2>
+            <p class="hero-text">
+                La Dra. Vianeth Cartagena te enseñará cómo construir buenos hábitos desde temprano,
+                resolver dudas comunes y hacer que la salud bucal de tu hijo no sea un problema,
+                sino una rutina tranquila y natural.
+            </p>
+        </div>
+
+        <div class="event-details">
+            <div class="detail-item">
+                <div class="detail-icon">📅</div>
+                <div class="detail-content">
+                    <h3>Fecha</h3>
+                    <p>Octubre 23, 2026</p>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-icon">🕒</div>
+                <div class="detail-content">
+                    <h3>Hora</h3>
+                    <p>3:00 PM - 5:00 PM (Hora Colombia)</p>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-icon">📍</div>
+                <div class="detail-content">
+                    <h3>Lugar</h3>
+                    <p>Cartagena de Indias, Colombia<br><small>Detalles de ubicación tras confirmación</small></p>
+                </div>
+            </div>
+
+            <div class="detail-item">
+                <div class="detail-icon">👥</div>
+                <div class="detail-content">
+                    <h3>Formato</h3>
+                    <p>Charla + Actividades para niños</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="benefits">
+            <h3>¿Qué aprenderás?</h3>
+            <ul>
+                <li><strong>Cuándo empezar</strong> la higiene bucal (desde antes de que salga el primer diente)</li>
+                <li><strong>La verdad sobre el azúcar</strong> y las caries (sorprenderá tu perspectiva)</li>
+                <li><strong>Cómo preparar a tu hijo</strong> para su primera cita sin miedo</li>
+                <li><strong>Snacks inteligentes</strong> que protegen los dientes</li>
+                <li><strong>Ortodoncia preventiva</strong>: cuándo y por qué comenzar</li>
+                <li><strong>Bonificaciones</strong>: Acceso a comunidad privada de padres + descuento en evaluaciones</li>
+            </ul>
+        </div>
+
+        <div class="form-section">
+            <h3>Asegura tu Cupo (Limitados)</h3>
+
+            <div class="success-message" id="successMessage">
+                ¡Registro exitoso! Revisa tu correo para confirmar tu asistencia.
+            </div>
+
+            <form id="registroForm">
+                <div class="form-group">
+                    <label for="nombre">Nombre Completo *</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Correo Electrónico *</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="whatsapp">WhatsApp (con +57) *</label>
+                    <input type="tel" id="whatsapp" name="whatsapp" placeholder="+57 XXX XXXXXXX" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ninos">¿Cuántos hijos tienes? *</label>
+                    <select id="ninos" name="ninos" required>
+                        <option value="">Selecciona</option>
+                        <option value="1">1 hijo</option>
+                        <option value="2">2 hijos</option>
+                        <option value="3">3 o más</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="edad">Edad del niño más pequeño *</label>
+                    <input type="text" id="edad" name="edad" placeholder="Ej: 2 años, 6 meses">
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="acepto" name="acepto" required>
+                    <label for="acepto">Autorizo recibir consejos e información por WhatsApp y correo</label>
+                </div>
+
+                <button type="submit">Confirmar mi Asistencia</button>
+            </form>
+        </div>
+
+        <footer>
+            <p><strong>Dra. Vianeth Cartagena</strong></p>
+            <p>Especialista en Odontopediatría</p>
+            <p>Cartagena de Indias, Colombia</p>
+            <div class="contact-info">
+                <p>📧 <a href="mailto:contacto@dravianeth.com" style="color: #4CAF50; text-decoration: none;">contacto@dravianeth.com</a></p>
+                <p>📱 <a href="https://wa.me/573001234567" style="color: #4CAF50; text-decoration: none;">WhatsApp</a></p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('registroForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = {
+                nombre: document.getElementById('nombre').value,
+                email: document.getElementById('email').value,
+                whatsapp: document.getElementById('whatsapp').value,
+                ninos: document.getElementById('ninos').value,
+                edad: document.getElementById('edad').value,
+                fecha: new Date().toLocaleString('es-CO')
+            };
+
+            // Guardar en localStorage (para demostración)
+            let registros = JSON.parse(localStorage.getItem('registrosEvento')) || [];
+            registros.push(formData);
+            localStorage.setItem('registrosEvento', JSON.stringify(registros));
+
+            // Mostrar éxito
+            document.getElementById('successMessage').style.display = 'block';
+
+            // Limpiar formulario
+            this.reset();
+
+            // En producción: enviar a servidor/email con la data
+            console.log('Registro guardado:', formData);
+
+            // Generar link WhatsApp automático
+            const mensajeWhatsApp = `Hola Dra. Vianeth, me registré al evento. Soy ${formData.nombre}.`;
+            const linkWhatsApp = `https://wa.me/573001234567?text=${encodeURIComponent(mensajeWhatsApp)}`;
+
+            setTimeout(() => {
+                // Descomentar en producción para enviar WhatsApp automático
+                // window.location.href = linkWhatsApp;
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

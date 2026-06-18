@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Growth Hacking Planner - Dmente Digital</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    * {
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+    }
+    html, body {
+      background-color: #061421;
+      color: #F8F8FF;
+    }
+    .dmente-teal { color: #2bebd2; }
+    .dmente-emerald { color: #156367; }
+    .dmente-sky { color: #7dd3fc; }
+    .dmente-magenta { color: #d946ef; }
+    .bg-dmente-deep { background-color: #061421; }
+    .bg-dmente-teal { background-color: #2bebd2; }
+    .bg-dmente-emerald { background-color: #156367; }
+    .border-dmente-emerald { border-color: #156367; }
+    .text-dmente-teal { color: #2bebd2; }
+    .text-dmente-white { color: #F8F8FF; }
+    .hover\:bg-dmente-teal:hover { background-color: #2bebd2; }
+    .focus\:ring-dmente-teal:focus { --tw-ring-color: #2bebd2; }
+    .focus\:border-dmente-teal:focus { border-color: #2bebd2; }
+    .shadow-dmente-teal { box-shadow: 0 0 20px rgba(43, 235, 210, 0.2); }
+  </style>
+</head>
+<body class="antialiased">
+  <div id="app"></div>
+
+  <script>
+    // Estado global simple (sin React, JavaScript vanilla)
+    const state = {
+      projectTitle: 'Estrategia de Growth Marketing - Dmente Digital',
+      activeStep: 1,
+      objectives: {
+        northStar: '',
+        kpis: '',
+        audience: '',
+        duration: '30 días',
+        budget: '',
+      },
+      ideas: [
+        { id: 1, title: 'Crear Lead Magnet con plantilla gratuita de IA', channel: 'Inbound / SEO', impact: 8, confidence: 7, ease: 9 },
+        { id: 2, title: 'Retargeting agresivo en Meta Ads a visitas de precios', channel: 'Paid Media', impact: 7, confidence: 8, ease: 8 },
+        { id: 3, title: 'Optimizar CTR de la landing de servicios principal', channel: 'CRO / Web', impact: 8, confidence: 6, ease: 7 }
+      ],
+      tests: [
+        {
+          id: 1,
+          ideaId: 1,
+          hypothesis: 'Si regalamos una plantilla de prompts de IA en la landing, entonces aumentaremos la tasa de conversión de leads en un 25%.',
+          metric: 'Tasa de conversión de formulario (Lead Rate)',
+          duration: '14 días',
+          responsible: 'Equipo Growth',
+          status: 'No Iniciado',
+          result: '',
+          validated: null,
+          decision: '',
+        }
+      ]
+    };
+
+    // Funciones auxiliares
+    function calculateIceScore(idea) {
+      return ((idea.impact + idea.confidence + idea.ease) / 3).toFixed(1);
+    }
+
+    function saveToLocalStorage() {
+      localStorage.setItem('dmente_growth_planner', JSON.stringify(state));
+      showNotification('¡Progreso guardado localmente con éxito!');
+    }
+
+    function showNotification(text) {
+      const notif = document.createElement('div');
+      notif.className = 'fixed bottom-6 right-6 bg-dmente-deep border border-dmente-teal/40 text-dmente-teal px-4 py-3 rounded-lg shadow-2xl z-50 flex items-center gap-2';
+      notif.innerHTML = `
+        <span class="h-2 w-2 bg-dmente-teal rounded-full animate-ping"></span>
+        <span>${text}</span>
+      `;
+      document.body.appendChild(notif);
+      setTimeout(() => notif.remove(), 3000);
+    }
+
+    function loadFromLocalStorage() {
+      const saved = localStorage.getItem('dmente_growth_planner');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          Object.assign(state, parsed);
+        } catch (e) {
+          console.error("Error al cargar datos", e);
+        }
+      }
+    }
+
+    function resetAll() {
+      if (confirm('¿Estás seguro de que quieres borrar todos los datos del proyecto actual?')) {
+        state.projectTitle = 'Nueva Campaña de Growth';
+        state.activeStep = 1;
+        state.objectives = { northStar: '', kpis: '', audience: '', duration: '30 días', budget: '' };
+        state.ideas = [];
+        state.tests = [];
+        localStorage.removeItem('dmente_growth_planner');
+        render();
+        showNotification('Proyecto reiniciado correctamente.');
+      }
+    }
+
+    function addIdea(title, channel) {
+      if (!title.trim()) return;
+      state.ideas.push({
+        id: Date.now(),
+        title,
+        channel: channel || 'General / Orgánico',
+        impact: 5,
+        confidence: 5,
+        ease: 5
+      });
+      showNotification('¡Idea añadida a la lluvia de ideas!');
+      render();
+    }
+
+    function deleteIdea(id) {
+      state.ideas = state.ideas.filter(i => i.id !== id);
+      state.tests = state.tests.filter(t => t.ideaId !== id);
+      showNotification('Idea eliminada');
+      render();
+    }
+
+    function updateIce(id, field, value) {
+      const idea = state.ideas.find(i => i.id === id);
+      if (idea) {
+        idea[field] = parseInt(value);
+        render();
+      }
+    }
+
+    function exportData() {
+      const dataStr = JSON.stringify(state, null, 2);
+      const blob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${state.projectTitle.replace(/\s+/g, '_')}_Growth_Plan.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // Renderizar interfaz
+    function render() {
+      const app = document.getElementById('app');
+
+      app.innerHTML = `
+        <div class="min-h-screen bg-dmente-deep text-dmente-white">
+
+          <!-- HEADER -->
+          <header class="border-b border-dmente-emerald/20 bg-dmente-deep/80 backdrop-blur sticky top-0 z-50 px-6 py-4">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-tr from-dmente-teal to-dmente-emerald text-dmente-deep p-2 rounded-lg font-bold shadow-lg shadow-dmente-teal/20">
+                  ⚡ DG
+                </div>
+                <div>
+                  <input
+                    id="projectTitle"
+                    type="text"
+                    value="${state.projectTitle}"
+                    onchange="state.projectTitle = this.value; render();"
+                    class="bg-transparent font-bold text-lg md:text-xl text-dmente-teal focus:outline-none border-b border-transparent hover:border-dmente-emerald/50 focus:border-dmente-teal w-full md:w-96 transition"
+                    placeholder="Nombre de la campaña..."
+                  />
+                  <p class="text-xs text-slate-400">Herramienta de Control de Experimentos • Dmente Digital</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <button onclick="saveToLocalStorage()" class="px-4 py-2 bg-dmente-emerald/20 hover:bg-dmente-emerald/30 border border-dmente-emerald/30 rounded-lg text-sm transition">
+                  💾 Guardar Progreso
+                </button>
+                <button onclick="exportData()" class="px-4 py-2 bg-dmente-teal hover:bg-teal-500 text-dmente-deep font-semibold rounded-lg text-sm transition shadow-md">
+                  📥 Exportar JSON
+                </button>
+                <button onclick="resetAll()" class="px-4 py-2 bg-dmente-magenta/20 hover:bg-dmente-magenta/30 border border-dmente-magenta/40 rounded-lg text-sm text-dmente-magenta transition">
+                  🔄 Reiniciar
+                </button>
+              </div>
+            </div>
+          </header>
+
+          <!-- CONTENIDO PRINCIPAL -->
+          <main class="max-w-7xl mx-auto w-full p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+            <!-- SECCIÓN IZQUIERDA -->
+            <section class="lg:col-span-5 flex flex-col gap-6">
+
+              <!-- MAPA INTERACTIVO -->
+              <div class="bg-dmente-deep/50 border border-dmente-emerald/20 rounded-2xl p-6">
+                <h2 class="text-sm font-semibold text-slate-400 tracking-wider uppercase mb-6 text-center">
+                  MAPA DE PROCESO DE GROWTH HACKING
+                </h2>
+
+                <div class="relative w-80 h-80 mx-auto flex items-center justify-center">
+                  <svg class="absolute w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="38" fill="none" stroke="#156367" stroke-width="2" />
+                    <circle cx="50" cy="50" r="38" fill="none" stroke="#2bebd2" stroke-width="2" opacity="0.5" />
+                  </svg>
+
+                  <div class="absolute w-36 h-36 bg-dmente-deep rounded-full border border-dmente-emerald/40 flex flex-col items-center justify-center p-3 shadow-inner">
+                    <div class="text-3xl">🚀</div>
+                    <div class="text-xs font-black text-dmente-teal mt-2">DMENTE</div>
+                    <div class="text-[8px] text-slate-500">GROWTH LAB</div>
+                  </div>
+                </div>
+
+                <div class="w-full mt-6 space-y-2 border-t border-dmente-emerald/20 pt-4">
+                  <div class="text-xs text-slate-500 font-bold mb-2">Fases del Embudo</div>
+                  ${[
+                    { n: 1, label: 'Definir Objetivos', desc: 'Metas e hipótesis iniciales' },
+                    { n: 2, label: 'Lluvia de Ideas', desc: 'Propuestas de mejora' },
+                    { n: 3, label: 'Priorizar Ideas (ICE)', desc: 'Elegir pruebas de impacto' },
+                    { n: 4, label: 'Planear Experimentos', desc: 'Definir hipótesis claras' },
+                    { n: 5, label: 'Ejecutar Tests', desc: 'Seguimiento de pruebas vivas' },
+                    { n: 6, label: 'Análisis de Resultados', desc: 'Validación y toma de decisiones' }
+                  ].map((step) => `
+                    <button
+                      onclick="state.activeStep = ${step.n}; render();"
+                      class="w-full flex items-center justify-between p-2.5 rounded-xl transition text-left ${
+                        state.activeStep === step.n
+                          ? 'bg-dmente-teal/20 border border-dmente-teal/40 text-dmente-teal'
+                          : 'bg-slate-900/30 border border-transparent hover:bg-slate-900/60'
+                      }"
+                    >
+                      <div class="flex items-center gap-3">
+                        <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                          state.activeStep === step.n ? 'bg-dmente-teal text-dmente-deep' : 'bg-dmente-emerald/40 text-dmente-teal'
+                        }">
+                          ${step.n}
+                        </span>
+                        <div>
+                          <div class="text-xs font-bold">${step.label}</div>
+                          <div class="text-[10px] text-slate-500">${step.desc}</div>
+                        </div>
+                      </div>
+                      <div class="text-xs">
+                        ${step.n < state.activeStep ? '✅' : step.n === state.activeStep ? '🎯' : '⏳'}
+                      </div>
+                    </button>
+                  `).join('')}
+                </div>
+              </div>
+
+              <!-- MÉTRICAS -->
+              <div class="bg-dmente-deep/50 border border-dmente-emerald/20 rounded-2xl p-4 grid grid-cols-3 gap-2 text-center">
+                <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20">
+                  <div class="text-xs text-slate-400">Total Ideas</div>
+                  <div class="text-xl font-bold text-dmente-teal">${state.ideas.length}</div>
+                </div>
+                <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20">
+                  <div class="text-xs text-slate-400">En Test</div>
+                  <div class="text-xl font-bold text-dmente-sky">${state.tests.filter(t => t.status === 'En Ejecución').length}</div>
+                </div>
+                <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20">
+                  <div class="text-xs text-slate-400">Analizados</div>
+                  <div class="text-xl font-bold text-dmente-magenta">${state.tests.filter(t => t.status === 'Finalizado').length}</div>
+                </div>
+              </div>
+            </section>
+
+            <!-- SECCIÓN DERECHA -->
+            <section class="lg:col-span-7 bg-dmente-deep/45 border border-dmente-emerald/20 rounded-2xl p-6 shadow-xl">
+
+              <div class="flex items-center gap-3 border-b border-dmente-emerald/20 pb-4 mb-6">
+                <div class="bg-dmente-teal/20 border border-dmente-teal/40 text-dmente-teal p-2.5 rounded-xl">
+                  ${['', '🎯', '💡', '📊', '📋', '🧪', '📈'][state.activeStep]}
+                </div>
+                <div>
+                  <span class="text-[10px] font-bold uppercase tracking-wider text-dmente-teal">Paso ${state.activeStep} de 6</span>
+                  <h1 class="text-xl font-extrabold text-dmente-white">
+                    ${[
+                      '',
+                      'Definir Objetivos de la Campaña',
+                      'Lluvia de Ideas (Brainstorm)',
+                      'Priorizar Ideas con Matriz ICE',
+                      'Planear Tests y Experimentos',
+                      'Ejecución y Seguimiento de Tests',
+                      'Análisis de Resultados de Experimentos'
+                    ][state.activeStep]}
+                  </h1>
+                </div>
+              </div>
+
+              <!-- CONTENIDO DINÁMICO -->
+              ${state.activeStep === 1 ? renderStep1() : ''}
+              ${state.activeStep === 2 ? renderStep2() : ''}
+              ${state.activeStep === 3 ? renderStep3() : ''}
+              ${state.activeStep === 4 ? renderStep4() : ''}
+              ${state.activeStep === 5 ? renderStep5() : ''}
+              ${state.activeStep === 6 ? renderStep6() : ''}
+
+            </section>
+          </main>
+        </div>
+      `;
+    }
+
+    function renderStep1() {
+      const northStar = state.objectives.northStar || '';
+      const kpis = state.objectives.kpis || '';
+      const audience = state.objectives.audience || '';
+      return `
+        <div class="space-y-4">
+          <p class="text-slate-400 text-sm">
+            Establece los cimientos. Define tu métrica norte y KPIs antes de comenzar.
+          </p>
+          <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20 space-y-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Métrica Norte de Crecimiento (North Star)</label>
+              <textarea
+                onchange="state.objectives.northStar = this.value"
+                placeholder="Ej: Aumentar suscriptores activos mensuales un 30%"
+                class="w-full bg-dmente-deep border border-dmente-emerald/20 focus:border-dmente-teal rounded-lg p-3 text-sm focus:outline-none focus:ring-1 focus:ring-dmente-teal text-dmente-white min-h-[80px]"
+              >${northStar}</textarea>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">KPIs de Apoyo</label>
+                <input
+                  type="text"
+                  onchange="state.objectives.kpis = this.value"
+                  placeholder="Ej: CPL < $2, CTR > 4%"
+                  value="${kpis}"
+                  class="w-full bg-dmente-deep border border-dmente-emerald/20 focus:border-dmente-teal rounded-lg p-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-dmente-teal text-dmente-white"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Público Objetivo</label>
+                <input
+                  type="text"
+                  onchange="state.objectives.audience = this.value"
+                  placeholder="Ej: Directores de Marketing en LATAM"
+                  value="${audience}"
+                  class="w-full bg-dmente-deep border border-dmente-emerald/20 focus:border-dmente-teal rounded-lg p-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-dmente-teal text-dmente-white"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="bg-dmente-teal/10 border border-dmente-teal/20 p-4 rounded-xl text-xs text-dmente-teal">
+            <span class="font-bold">🧠 Consejo Dmente:</span> Mantén tus metas <strong>S.M.A.R.T.</strong>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderStep2() {
+      return `
+        <div class="space-y-4">
+          <p class="text-slate-400 text-sm">
+            Ninguna idea es mala en esta etapa. Añade hacks que puedan disparar conversiones.
+          </p>
+          <form onsubmit="event.preventDefault(); const title = document.getElementById('ideaTitle').value; const channel = document.getElementById('ideaChannel').value; addIdea(title, channel); document.getElementById('ideaTitle').value = ''; document.getElementById('ideaChannel').value = '';" class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20 grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+            <div class="md:col-span-6">
+              <label class="block text-xs font-semibold text-slate-300 mb-1">¿Cuál es tu idea?</label>
+              <input id="ideaTitle" type="text" placeholder="Ej: Enviar mail con descuento a carritos abandonados..." class="w-full bg-dmente-deep border border-dmente-emerald/20 focus:border-dmente-teal rounded-lg p-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-dmente-teal text-dmente-white" required />
+            </div>
+            <div class="md:col-span-4">
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Canal</label>
+              <input id="ideaChannel" type="text" placeholder="Ej: Email / CRM" class="w-full bg-dmente-deep border border-dmente-emerald/20 focus:border-dmente-teal rounded-lg p-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-dmente-teal text-dmente-white" />
+            </div>
+            <div class="md:col-span-2">
+              <button type="submit" class="w-full bg-dmente-teal hover:bg-teal-500 text-dmente-deep font-bold p-2.5 rounded-lg text-sm transition">Añadir</button>
+            </div>
+          </form>
+          <div class="space-y-2">
+            <h3 class="text-xs font-semibold uppercase text-slate-400">Ideas en el Banco (${state.ideas.length})</h3>
+            <div class="max-h-64 overflow-y-auto space-y-2">
+              ${state.ideas.length === 0 ? '<div class="bg-dmente-deep/40 border border-dashed border-dmente-emerald/20 p-8 rounded-xl text-center text-slate-500 text-sm">Tu banco está vacío. ¡Añade la primera idea arriba!</div>' : state.ideas.map(idea => `
+                <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20 flex items-center justify-between gap-3">
+                  <div>
+                    <div class="text-sm font-semibold text-dmente-white">${idea.title}</div>
+                    <span class="text-[10px] bg-dmente-emerald/20 px-2 py-0.5 rounded text-dmente-teal">${idea.channel}</span>
+                  </div>
+                  <button onclick="deleteIdea(${idea.id})" class="text-slate-500 hover:text-dmente-magenta p-1">🗑️</button>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderStep3() {
+      const sorted = [...state.ideas].sort((a, b) => calculateIceScore(b) - calculateIceScore(a));
+      return `
+        <div class="space-y-4">
+          <p class="text-slate-400 text-sm">
+            Prioriza con la matriz ICE: Impacto, Confianza, Facilidad.
+          </p>
+          <div class="max-h-80 overflow-y-auto space-y-3">
+            ${sorted.length === 0 ? '<div class="text-slate-500 text-sm p-8 text-center">No tienes ideas para priorizar.</div>' : sorted.map(idea => `
+              <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex-1">
+                  <div class="text-sm font-bold text-dmente-white">${idea.title}</div>
+                  <span class="text-xs text-dmente-teal">ICE Score: ${calculateIceScore(idea)}/10</span>
+                </div>
+                <div class="flex gap-4 bg-dmente-deep/80 p-2.5 rounded-lg border border-dmente-emerald/20">
+                  <div class="flex flex-col items-center">
+                    <span class="text-[10px] font-bold text-dmente-magenta">Impacto</span>
+                    <input type="range" min="1" max="10" value="${idea.impact}" onchange="updateIce(${idea.id}, 'impact', this.value)" class="w-16" />
+                    <span class="text-xs font-bold">${idea.impact}</span>
+                  </div>
+                  <div class="flex flex-col items-center">
+                    <span class="text-[10px] font-bold text-dmente-sky">Confianza</span>
+                    <input type="range" min="1" max="10" value="${idea.confidence}" onchange="updateIce(${idea.id}, 'confidence', this.value)" class="w-16" />
+                    <span class="text-xs font-bold">${idea.confidence}</span>
+                  </div>
+                  <div class="flex flex-col items-center">
+                    <span class="text-[10px] font-bold text-dmente-teal">Facilidad</span>
+                    <input type="range" min="1" max="10" value="${idea.ease}" onchange="updateIce(${idea.id}, 'ease', this.value)" class="w-16" />
+                    <span class="text-xs font-bold">${idea.ease}</span>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderStep4() {
+      return `
+        <div class="space-y-4">
+          <p class="text-slate-400 text-sm">Formaliza tus ideas como experimentos científicos.</p>
+          <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20">
+            <p class="text-xs text-slate-300 mb-3">Tienes ${state.ideas.length} ideas en el banco.</p>
+            <p class="text-xs text-slate-400">Tienes ${state.tests.length} experimentos planificados.</p>
+          </div>
+          <div class="bg-dmente-teal/10 border border-dmente-teal/20 p-4 rounded-xl text-xs text-dmente-teal">
+            <span class="font-bold">💡 Paso 4:</span> Estructura tus hipótesis aquí (próximas mejoras)
+          </div>
+        </div>
+      `;
+    }
+
+    function renderStep5() {
+      return `
+        <div class="space-y-4">
+          <p class="text-slate-400 text-sm">Controla tus experimentos en tiempo real.</p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20">
+              <div class="text-xs font-bold text-slate-400 pb-2 mb-1">📋 POR EMPEZAR</div>
+              <div class="space-y-2 text-[10px] text-slate-400">
+                ${state.tests.filter(t => t.status === 'No Iniciado').length} tests pendientes
+              </div>
+            </div>
+            <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20">
+              <div class="text-xs font-bold text-dmente-sky pb-2 mb-1">🧪 EN EJECUCIÓN</div>
+              <div class="space-y-2 text-[10px] text-slate-400">
+                ${state.tests.filter(t => t.status === 'En Ejecución').length} tests activos
+              </div>
+            </div>
+            <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20">
+              <div class="text-xs font-bold text-dmente-teal pb-2 mb-1">📊 FINALIZADO</div>
+              <div class="space-y-2 text-[10px] text-slate-400">
+                ${state.tests.filter(t => t.status === 'Finalizado').length} tests completados
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderStep6() {
+      return `
+        <div class="space-y-4">
+          <p class="text-slate-400 text-sm">Valida resultados y toma decisiones estratégicas.</p>
+          <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20">
+            <p class="text-xs text-slate-300">Tests totales: ${state.tests.length}</p>
+            <p class="text-xs text-slate-300">Finalizados: ${state.tests.filter(t => t.status === 'Finalizado').length}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    // Cargar datos y renderizar
+    loadFromLocalStorage();
+    render();
+  </script>
+</body>
+</html>
