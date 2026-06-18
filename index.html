@@ -552,7 +552,7 @@
     function renderStep5() {
       return `
         <div class="space-y-4">
-          <p class="text-slate-400 text-sm">Arrastra tus tests según el estado de ejecución.</p>
+          <p class="text-slate-400 text-sm">Mueve tus tests según el estado de ejecución.</p>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
 
             <!-- COLUMNA 1: POR EMPEZAR -->
@@ -561,13 +561,17 @@
                 📋 POR EMPEZAR (${state.tests.filter(t => t.status === 'No Iniciado').length})
               </div>
               <div class="space-y-2 max-h-96 overflow-y-auto">
-                ${state.tests.filter(t => t.status === 'No Iniciado').length === 0 ? '<div class="text-[10px] text-slate-500 p-4 text-center">Sin tests</div>' : state.tests.filter(t => t.status === 'No Iniciado').map(test => `
-                  <div class="bg-slate-800/50 p-2.5 rounded-lg border border-slate-700 text-[10px] cursor-pointer hover:border-dmente-sky transition">
-                    <p class="font-bold text-slate-300 mb-1">Test #${test.id.toString().slice(-4)}</p>
-                    <p class="text-slate-400 line-clamp-2 mb-2">"${test.hypothesis}"</p>
-                    <button onclick="updateTestStatus(${test.id}, 'En Ejecución')" class="w-full text-xs bg-dmente-sky hover:bg-sky-500 text-dmente-deep font-bold p-1 rounded transition">▶ Iniciar</button>
-                  </div>
-                `).join('')}
+                ${state.tests.filter(t => t.status === 'No Iniciado').length === 0 ? '<div class="text-[10px] text-slate-500 p-4 text-center">Sin tests</div>' : state.tests.filter(t => t.status === 'No Iniciado').map(test => {
+                  const idea = state.ideas.find(i => i.id === test.ideaId);
+                  return `
+                    <div class="bg-slate-800/50 p-2.5 rounded-lg border border-slate-700 text-[10px] cursor-pointer hover:border-dmente-sky transition">
+                      <p class="font-bold text-slate-300 mb-1">📌 ${idea ? idea.title : 'Test'}</p>
+                      <p class="text-slate-500 text-[9px] mb-1">📊 ${test.metric}</p>
+                      <p class="text-slate-400 line-clamp-2 mb-2 text-[9px]">"${test.hypothesis}"</p>
+                      <button onclick="updateTestStatus(${test.id}, 'En Ejecución')" class="w-full text-xs bg-dmente-sky hover:bg-sky-500 text-dmente-deep font-bold p-1 rounded transition">▶ Iniciar</button>
+                    </div>
+                  `;
+                }).join('')}
               </div>
             </div>
 
@@ -577,13 +581,17 @@
                 🧪 EN EJECUCIÓN (${state.tests.filter(t => t.status === 'En Ejecución').length})
               </div>
               <div class="space-y-2 max-h-96 overflow-y-auto">
-                ${state.tests.filter(t => t.status === 'En Ejecución').length === 0 ? '<div class="text-[10px] text-slate-500 p-4 text-center">Sin tests</div>' : state.tests.filter(t => t.status === 'En Ejecución').map(test => `
-                  <div class="bg-sky-900/30 p-2.5 rounded-lg border border-dmente-sky/40 text-[10px] cursor-pointer hover:border-dmente-sky transition">
-                    <p class="font-bold text-dmente-sky mb-1">Test #${test.id.toString().slice(-4)}</p>
-                    <p class="text-slate-400 line-clamp-2 mb-2">"${test.hypothesis}"</p>
-                    <button onclick="updateTestStatus(${test.id}, 'Finalizado')" class="w-full text-xs bg-dmente-teal hover:bg-teal-500 text-dmente-deep font-bold p-1 rounded transition">✓ Finalizar</button>
-                  </div>
-                `).join('')}
+                ${state.tests.filter(t => t.status === 'En Ejecución').length === 0 ? '<div class="text-[10px] text-slate-500 p-4 text-center">Sin tests</div>' : state.tests.filter(t => t.status === 'En Ejecución').map(test => {
+                  const idea = state.ideas.find(i => i.id === test.ideaId);
+                  return `
+                    <div class="bg-sky-900/30 p-2.5 rounded-lg border border-dmente-sky/40 text-[10px] cursor-pointer hover:border-dmente-sky transition">
+                      <p class="font-bold text-dmente-sky mb-1">📌 ${idea ? idea.title : 'Test'}</p>
+                      <p class="text-slate-500 text-[9px] mb-1">📊 ${test.metric}</p>
+                      <p class="text-slate-400 line-clamp-2 mb-2 text-[9px]">"${test.hypothesis}"</p>
+                      <button onclick="updateTestStatus(${test.id}, 'Finalizado')" class="w-full text-xs bg-dmente-teal hover:bg-teal-500 text-dmente-deep font-bold p-1 rounded transition">✓ Finalizar</button>
+                    </div>
+                  `;
+                }).join('')}
               </div>
             </div>
 
@@ -593,13 +601,17 @@
                 📊 FINALIZADO (${state.tests.filter(t => t.status === 'Finalizado').length})
               </div>
               <div class="space-y-2 max-h-96 overflow-y-auto">
-                ${state.tests.filter(t => t.status === 'Finalizado').length === 0 ? '<div class="text-[10px] text-slate-500 p-4 text-center">Sin tests</div>' : state.tests.filter(t => t.status === 'Finalizado').map(test => `
-                  <div class="bg-teal-900/30 p-2.5 rounded-lg border border-dmente-teal/40 text-[10px]">
-                    <p class="font-bold text-dmente-teal mb-1">Test #${test.id.toString().slice(-4)}</p>
-                    <p class="text-slate-400 line-clamp-2 mb-2">"${test.hypothesis}"</p>
-                    <span class="text-[9px] text-slate-500">✓ Listo para analizar</span>
-                  </div>
-                `).join('')}
+                ${state.tests.filter(t => t.status === 'Finalizado').length === 0 ? '<div class="text-[10px] text-slate-500 p-4 text-center">Sin tests</div>' : state.tests.filter(t => t.status === 'Finalizado').map(test => {
+                  const idea = state.ideas.find(i => i.id === test.ideaId);
+                  return `
+                    <div class="bg-teal-900/30 p-2.5 rounded-lg border border-dmente-teal/40 text-[10px]">
+                      <p class="font-bold text-dmente-teal mb-1">📌 ${idea ? idea.title : 'Test'}</p>
+                      <p class="text-slate-500 text-[9px] mb-1">📊 ${test.metric}</p>
+                      <p class="text-slate-400 line-clamp-2 mb-2 text-[9px]">"${test.hypothesis}"</p>
+                      <span class="text-[9px] text-slate-500">✓ Listo para analizar</span>
+                    </div>
+                  `;
+                }).join('')}
               </div>
             </div>
 
