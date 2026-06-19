@@ -516,11 +516,11 @@
                 <div class="bg-dmente-deep/40 p-3 rounded-lg border border-dmente-emerald/10">
                   <div class="text-xs text-slate-300 font-bold mb-2">➕ Crear nuevo experimento</div>
                   <div class="space-y-2">
-                    <textarea id="hyp_${idea.id}" placeholder="Hipótesis: Si hacemos X, pasará Y porque Z" class="w-full bg-dmente-deep/60 border border-dmente-emerald/20 text-slate-300 text-xs px-2.5 py-2 rounded focus:border-dmente-teal outline-none" rows="2"></textarea>
-                    <input type="text" id="metric_${idea.id}" placeholder="KPI a medir (ej: CTR, Conversiones)" class="w-full bg-dmente-deep/60 border border-dmente-emerald/20 text-slate-300 text-xs px-2.5 py-2 rounded focus:border-dmente-teal outline-none">
+                    <textarea id="hyp_${idea.id}" placeholder="Hipótesis: Si hacemos X, pasará Y porque Z" class="w-full bg-dmente-deep/80 border border-dmente-teal/30 text-slate-200 text-xs px-3 py-2.5 rounded-lg focus:border-dmente-teal focus:shadow-dmente-teal outline-none placeholder-slate-500" rows="2"></textarea>
+                    <input type="text" id="metric_${idea.id}" placeholder="KPI a medir (ej: CTR, Conversiones)" class="w-full bg-dmente-deep/80 border border-dmente-teal/30 text-slate-200 text-xs px-3 py-2.5 rounded-lg focus:border-dmente-teal focus:shadow-dmente-teal outline-none placeholder-slate-500">
                     <div class="grid grid-cols-2 gap-2">
-                      <input type="text" id="dur_${idea.id}" placeholder="Duración (ej: 7 días)" class="bg-dmente-deep/60 border border-dmente-emerald/20 text-slate-300 text-xs px-2.5 py-2 rounded focus:border-dmente-teal outline-none">
-                      <input type="text" id="resp_${idea.id}" placeholder="Responsable" class="bg-dmente-deep/60 border border-dmente-emerald/20 text-slate-300 text-xs px-2.5 py-2 rounded focus:border-dmente-teal outline-none">
+                      <input type="text" id="dur_${idea.id}" placeholder="Duración (ej: 7 días)" class="bg-dmente-deep/80 border border-dmente-teal/30 text-slate-200 text-xs px-3 py-2.5 rounded-lg focus:border-dmente-teal focus:shadow-dmente-teal outline-none placeholder-slate-500">
+                      <input type="text" id="resp_${idea.id}" placeholder="Responsable" class="bg-dmente-deep/80 border border-dmente-teal/30 text-slate-200 text-xs px-3 py-2.5 rounded-lg focus:border-dmente-teal focus:shadow-dmente-teal outline-none placeholder-slate-500">
                     </div>
                     <button onclick="
                       const h = document.getElementById('hyp_${idea.id}').value;
