@@ -1,0 +1,66 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - generic [ref=e7]: ⚡ DG
+        - generic [ref=e8]:
+          - textbox "Nombre de la campaña..." [ref=e9]: Estrategia de Growth Marketing - Dmente Digital
+          - paragraph [ref=e10]: Herramienta de Control de Experimentos • Dmente Digital
+      - generic [ref=e11]:
+        - button "💾 Guardar Progreso" [ref=e12] [cursor=pointer]
+        - button "📥 Exportar JSON" [ref=e13] [cursor=pointer]
+        - button "🔄 Reiniciar" [ref=e14] [cursor=pointer]
+  - generic [ref=e17]:
+    - button "🎯 Definir Objetivos" [ref=e18] [cursor=pointer]:
+      - generic [ref=e19]: 🎯
+      - generic [ref=e20]: Definir Objetivos
+    - button "2 Lluvia de Ideas" [ref=e21] [cursor=pointer]:
+      - generic [ref=e22]: "2"
+      - generic [ref=e23]: Lluvia de Ideas
+    - button "3 Priorizar ICE" [ref=e24] [cursor=pointer]:
+      - generic [ref=e25]: "3"
+      - generic [ref=e26]: Priorizar ICE
+    - button "4 Planear Tests" [ref=e27] [cursor=pointer]:
+      - generic [ref=e28]: "4"
+      - generic [ref=e29]: Planear Tests
+    - button "5 Ejecutar Tests" [ref=e30] [cursor=pointer]:
+      - generic [ref=e31]: "5"
+      - generic [ref=e32]: Ejecutar Tests
+    - button "6 Análisis" [ref=e33] [cursor=pointer]:
+      - generic [ref=e34]: "6"
+      - generic [ref=e35]: Análisis
+  - main [ref=e36]:
+    - generic [ref=e37]:
+      - generic [ref=e38]: 🎯
+      - generic [ref=e39]:
+        - generic [ref=e40]: Paso 1 de 6
+        - heading "Definir Objetivos de la Campaña" [level=1] [ref=e41]
+    - generic [ref=e42]:
+      - complementary [ref=e43]:
+        - generic [ref=e44]:
+          - generic [ref=e45]: Métricas
+          - generic [ref=e46]:
+            - generic [ref=e47]: Total Ideas
+            - generic [ref=e48]: "3"
+          - generic [ref=e49]:
+            - generic [ref=e50]: En Test
+            - generic [ref=e51]: "0"
+          - generic [ref=e52]:
+            - generic [ref=e53]: Finalizados
+            - generic [ref=e54]: "0"
+      - generic [ref=e56]:
+        - paragraph [ref=e57]: Establece los cimientos. Define tu métrica norte y KPIs antes de comenzar.
+        - generic [ref=e58]:
+          - generic [ref=e59]:
+            - generic [ref=e60]: Métrica Norte de Crecimiento (North Star)
+            - 'textbox "Ej: Aumentar suscriptores activos mensuales un 30%" [ref=e61]'
+          - generic [ref=e62]:
+            - generic [ref=e63]:
+              - generic [ref=e64]: KPIs de Apoyo
+              - 'textbox "Ej: CPL < $2, CTR > 4%" [ref=e65]'
+            - generic [ref=e66]:
+              - generic [ref=e67]: Público Objetivo
+              - 'textbox "Ej: Directores de Marketing en LATAM" [ref=e68]'
+        - generic [ref=e69]:
+          - text: "🧠 Consejo Dmente: Mantén tus metas"
+          - strong [ref=e70]: S.M.A.R.T.

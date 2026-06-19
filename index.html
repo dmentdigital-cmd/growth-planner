@@ -141,6 +141,44 @@
       }
     }
 
+    function addTest(ideaId, hypothesis, metric, duration, responsible) {
+      if (!hypothesis.trim() || !metric.trim()) {
+        showNotification('Completa hipótesis y métrica');
+        return;
+      }
+      state.tests.push({
+        id: Date.now(),
+        ideaId,
+        hypothesis,
+        metric,
+        duration: duration || '7 días',
+        responsible: responsible || 'Sin asignar',
+        status: 'No Iniciado',
+        result: '',
+        validated: null,
+        decision: ''
+      });
+      saveToLocalStorage();
+      showNotification('✅ Experimento creado');
+      render();
+    }
+
+    function deleteTest(id) {
+      state.tests = state.tests.filter(t => t.id !== id);
+      saveToLocalStorage();
+      showNotification('Test eliminado');
+      render();
+    }
+
+    function updateTestStatus(id, newStatus) {
+      const test = state.tests.find(t => t.id === id);
+      if (test) {
+        test.status = newStatus;
+        saveToLocalStorage();
+        render();
+      }
+    }
+
     function exportData() {
       const dataStr = JSON.stringify(state, null, 2);
       const blob = new Blob([dataStr], { type: 'application/json' });
@@ -432,17 +470,19 @@
 
     function renderStep4() {
       const sorted = [...state.ideas].sort((a, b) => calculateIceScore(b) - calculateIceScore(a));
+      const ideaTests = (ideaId) => state.tests.filter(t => t.ideaId === ideaId);
+
       return `
         <div class="space-y-4">
           <p class="text-slate-400 text-sm">Formaliza tus ideas como experimentos científicos.</p>
           <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20">
-            <p class="text-xs text-slate-300 mb-3">Tienes ${state.ideas.length} ideas en el banco.</p>
-            <p class="text-xs text-slate-400">Tienes ${state.tests.length} experimentos planificados.</p>
+            <p class="text-xs text-slate-300 mb-2">📊 ${state.ideas.length} ideas en el banco</p>
+            <p class="text-xs text-slate-400">✅ ${state.tests.length} experimentos planificados</p>
           </div>
-          <div class="max-h-96 overflow-y-auto space-y-3">
+          <div class="max-h-[600px] overflow-y-auto space-y-3 pr-2">
             ${sorted.length === 0 ? '<div class="text-slate-500 text-sm p-8 text-center">No tienes ideas prioritarias. Vuelve al paso 3 para priorizarlas.</div>' : sorted.map(idea => `
-              <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20 flex flex-col gap-3">
-                <div class="flex items-start justify-between gap-4">
+              <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20">
+                <div class="flex items-start justify-between gap-4 mb-3">
                   <div class="flex-1">
                     <div class="text-sm font-bold text-dmente-white">${idea.title}</div>
                     <span class="text-xs text-slate-400">Canal: ${idea.channel || 'N/A'}</span>
@@ -451,10 +491,51 @@
                     <div class="text-[11px] font-bold text-dmente-teal">Score ${calculateIceScore(idea)}/10</div>
                   </div>
                 </div>
-                <div class="flex gap-2 text-xs">
+                <div class="flex gap-2 text-xs mb-4">
                   <span class="bg-dmente-magenta/20 text-dmente-magenta px-2.5 py-1 rounded-md">Impacto: ${idea.impact}</span>
                   <span class="bg-dmente-sky/20 text-dmente-sky px-2.5 py-1 rounded-md">Confianza: ${idea.confidence}</span>
                   <span class="bg-dmente-teal/20 text-dmente-teal px-2.5 py-1 rounded-md">Facilidad: ${idea.ease}</span>
+                </div>
+
+                ${ideaTests(idea.id).length > 0 ? `
+                  <div class="bg-dmente-teal/10 border border-dmente-teal/20 p-3 rounded-lg mb-3 text-xs">
+                    <div class="text-dmente-teal font-bold mb-2">📋 Experimentos creados:</div>
+                    ${ideaTests(idea.id).map(test => `
+                      <div class="text-slate-300 py-1 flex justify-between items-start">
+                        <div class="flex-1">
+                          <div class="font-semibold text-dmente-teal">${test.hypothesis.substring(0, 50)}...</div>
+                          <div class="text-slate-400 text-[10px] mt-1">Métrica: ${test.metric}</div>
+                          <div class="text-slate-400 text-[10px]">Estado: <span class="text-dmente-teal">${test.status}</span></div>
+                        </div>
+                        <button onclick="deleteTest(${test.id})" class="text-slate-500 hover:text-red-400 ml-2">✕</button>
+                      </div>
+                    `).join('')}
+                  </div>
+                ` : ''}
+
+                <div class="bg-dmente-deep/40 p-3 rounded-lg border border-dmente-emerald/10">
+                  <div class="text-xs text-slate-300 font-bold mb-2">➕ Crear nuevo experimento</div>
+                  <div class="space-y-2">
+                    <textarea id="hyp_${idea.id}" placeholder="Hipótesis: Si hacemos X, pasará Y porque Z" class="w-full bg-dmente-deep/60 border border-dmente-emerald/20 text-slate-300 text-xs px-2.5 py-2 rounded focus:border-dmente-teal outline-none" rows="2"></textarea>
+                    <input type="text" id="metric_${idea.id}" placeholder="KPI a medir (ej: CTR, Conversiones)" class="w-full bg-dmente-deep/60 border border-dmente-emerald/20 text-slate-300 text-xs px-2.5 py-2 rounded focus:border-dmente-teal outline-none">
+                    <div class="grid grid-cols-2 gap-2">
+                      <input type="text" id="dur_${idea.id}" placeholder="Duración (ej: 7 días)" class="bg-dmente-deep/60 border border-dmente-emerald/20 text-slate-300 text-xs px-2.5 py-2 rounded focus:border-dmente-teal outline-none">
+                      <input type="text" id="resp_${idea.id}" placeholder="Responsable" class="bg-dmente-deep/60 border border-dmente-emerald/20 text-slate-300 text-xs px-2.5 py-2 rounded focus:border-dmente-teal outline-none">
+                    </div>
+                    <button onclick="
+                      const h = document.getElementById('hyp_${idea.id}').value;
+                      const m = document.getElementById('metric_${idea.id}').value;
+                      const d = document.getElementById('dur_${idea.id}').value;
+                      const r = document.getElementById('resp_${idea.id}').value;
+                      addTest(${idea.id}, h, m, d, r);
+                      document.getElementById('hyp_${idea.id}').value = '';
+                      document.getElementById('metric_${idea.id}').value = '';
+                      document.getElementById('dur_${idea.id}').value = '';
+                      document.getElementById('resp_${idea.id}').value = '';
+                    " class="w-full bg-dmente-teal/20 hover:bg-dmente-teal/30 border border-dmente-teal/40 text-dmente-teal font-bold text-xs py-2 rounded transition">
+                      ✅ Crear Experimento
+                    </button>
+                  </div>
                 </div>
               </div>
             `).join('')}
@@ -464,26 +545,62 @@
     }
 
     function renderStep5() {
+      const notStarted = state.tests.filter(t => t.status === 'No Iniciado');
+      const inProgress = state.tests.filter(t => t.status === 'En Ejecución');
+      const finished = state.tests.filter(t => t.status === 'Finalizado');
+
+      const getIdeaTitle = (ideaId) => state.ideas.find(i => i.id === ideaId)?.title || 'Idea eliminada';
+
+      const renderTestCard = (test) => `
+        <div class="bg-dmente-deep/40 p-3 rounded-lg border border-dmente-emerald/10 text-[11px]">
+          <div class="font-semibold text-dmente-teal mb-1 line-clamp-2">${test.hypothesis}</div>
+          <div class="text-slate-400 text-[10px] mb-2">
+            <div>📊 ${test.metric}</div>
+            <div>⏱️ ${test.duration}</div>
+            <div>👤 ${test.responsible}</div>
+          </div>
+          <div class="flex gap-2 items-center">
+            <select onchange="updateTestStatus(${test.id}, this.value)" class="text-xs bg-dmente-deep/60 border border-dmente-emerald/20 text-slate-300 px-2 py-1 rounded focus:border-dmente-teal outline-none flex-1">
+              <option value="No Iniciado" ${test.status === 'No Iniciado' ? 'selected' : ''}>No Iniciado</option>
+              <option value="En Ejecución" ${test.status === 'En Ejecución' ? 'selected' : ''}>En Ejecución</option>
+              <option value="Finalizado" ${test.status === 'Finalizado' ? 'selected' : ''}>Finalizado</option>
+            </select>
+            <button onclick="deleteTest(${test.id})" class="text-slate-500 hover:text-red-400">✕</button>
+          </div>
+        </div>
+      `;
+
       return `
         <div class="space-y-4">
           <p class="text-slate-400 text-sm">Controla tus experimentos en tiempo real.</p>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20">
-              <div class="text-xs font-bold text-slate-400 pb-2 mb-1">📋 POR EMPEZAR</div>
-              <div class="space-y-2 text-[10px] text-slate-400">
-                ${state.tests.filter(t => t.status === 'No Iniciado').length} tests pendientes
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-h-[600px]">
+            <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20 overflow-y-auto">
+              <div class="text-xs font-bold text-slate-400 pb-3 mb-3 border-b border-dmente-emerald/20">
+                📋 POR EMPEZAR
+                <span class="text-dmente-teal ml-2">${notStarted.length}</span>
+              </div>
+              <div class="space-y-2">
+                ${notStarted.length === 0 ? '<div class="text-slate-500 text-xs text-center py-4">Sin tests pendientes</div>' : notStarted.map(test => renderTestCard(test)).join('')}
               </div>
             </div>
-            <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20">
-              <div class="text-xs font-bold text-dmente-sky pb-2 mb-1">🧪 EN EJECUCIÓN</div>
-              <div class="space-y-2 text-[10px] text-slate-400">
-                ${state.tests.filter(t => t.status === 'En Ejecución').length} tests activos
+
+            <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-sky/20 overflow-y-auto">
+              <div class="text-xs font-bold text-dmente-sky pb-3 mb-3 border-b border-dmente-sky/20">
+                🧪 EN EJECUCIÓN
+                <span class="text-dmente-sky ml-2">${inProgress.length}</span>
+              </div>
+              <div class="space-y-2">
+                ${inProgress.length === 0 ? '<div class="text-slate-500 text-xs text-center py-4">Sin tests activos</div>' : inProgress.map(test => renderTestCard(test)).join('')}
               </div>
             </div>
-            <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20">
-              <div class="text-xs font-bold text-dmente-teal pb-2 mb-1">📊 FINALIZADO</div>
-              <div class="space-y-2 text-[10px] text-slate-400">
-                ${state.tests.filter(t => t.status === 'Finalizado').length} tests completados
+
+            <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-teal/20 overflow-y-auto">
+              <div class="text-xs font-bold text-dmente-teal pb-3 mb-3 border-b border-dmente-teal/20">
+                📊 FINALIZADO
+                <span class="text-dmente-teal ml-2">${finished.length}</span>
+              </div>
+              <div class="space-y-2">
+                ${finished.length === 0 ? '<div class="text-slate-500 text-xs text-center py-4">Sin tests finalizados</div>' : finished.map(test => renderTestCard(test)).join('')}
               </div>
             </div>
           </div>

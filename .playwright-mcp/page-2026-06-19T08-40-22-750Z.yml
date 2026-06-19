@@ -1,0 +1,55 @@
+- generic [ref=e215]:
+  - banner [ref=e216]:
+    - generic [ref=e217]:
+      - generic [ref=e218]:
+        - generic [ref=e219]: ⚡ DG
+        - generic [ref=e220]:
+          - textbox "Nombre de la campaña..." [ref=e221]: Estrategia de Growth Marketing - Dmente Digital
+          - paragraph [ref=e222]: Herramienta de Control de Experimentos • Dmente Digital
+      - generic [ref=e223]:
+        - button "💾 Guardar Progreso" [ref=e224] [cursor=pointer]
+        - button "📥 Exportar JSON" [ref=e225] [cursor=pointer]
+        - button "🔄 Reiniciar" [ref=e226] [cursor=pointer]
+  - generic [ref=e229]:
+    - button "✅ Definir Objetivos" [ref=e230] [cursor=pointer]:
+      - generic [ref=e231]: ✅
+      - generic [ref=e232]: Definir Objetivos
+    - button "✅ Lluvia de Ideas" [ref=e233] [cursor=pointer]:
+      - generic [ref=e234]: ✅
+      - generic [ref=e235]: Lluvia de Ideas
+    - button "✅ Priorizar ICE" [ref=e236] [cursor=pointer]:
+      - generic [ref=e237]: ✅
+      - generic [ref=e238]: Priorizar ICE
+    - button "✅ Planear Tests" [ref=e239] [cursor=pointer]:
+      - generic [ref=e240]: ✅
+      - generic [ref=e241]: Planear Tests
+    - button "✅ Ejecutar Tests" [ref=e242] [cursor=pointer]:
+      - generic [ref=e243]: ✅
+      - generic [ref=e244]: Ejecutar Tests
+    - button "🎯 Análisis" [ref=e245] [cursor=pointer]:
+      - generic [ref=e246]: 🎯
+      - generic [ref=e247]: Análisis
+  - main [ref=e248]:
+    - generic [ref=e249]:
+      - generic [ref=e250]: 📈
+      - generic [ref=e251]:
+        - generic [ref=e252]: Paso 6 de 6
+        - heading "Análisis de Resultados de Experimentos" [level=1] [ref=e253]
+    - generic [ref=e254]:
+      - complementary [ref=e255]:
+        - generic [ref=e256]:
+          - generic [ref=e257]: Métricas
+          - generic [ref=e258]:
+            - generic [ref=e259]: Total Ideas
+            - generic [ref=e260]: "3"
+          - generic [ref=e261]:
+            - generic [ref=e262]: En Test
+            - generic [ref=e263]: "0"
+          - generic [ref=e264]:
+            - generic [ref=e265]: Finalizados
+            - generic [ref=e266]: "0"
+      - generic [ref=e268]:
+        - paragraph [ref=e269]: Valida resultados y toma decisiones estratégicas.
+        - generic [ref=e270]:
+          - paragraph [ref=e271]: "Tests totales: 1"
+          - paragraph [ref=e272]: "Finalizados: 0"
