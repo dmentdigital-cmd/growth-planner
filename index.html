@@ -141,42 +141,6 @@
       }
     }
 
-    function addTest(ideaId, hypothesis, metric, duration, responsible) {
-      if (!ideaId || !hypothesis.trim() || !metric.trim()) {
-        alert('Por favor completa: Idea, Hipótesis y Métrica');
-        return;
-      }
-      state.tests.push({
-        id: Date.now(),
-        ideaId: parseInt(ideaId),
-        hypothesis,
-        metric,
-        duration: duration || '7 días',
-        responsible: responsible || 'Responsable',
-        status: 'No Iniciado',
-        result: '',
-        validated: null,
-        decision: '',
-      });
-      showNotification('¡Experimento creado exitosamente!');
-      render();
-    }
-
-    function deleteTest(id) {
-      state.tests = state.tests.filter(t => t.id !== id);
-      showNotification('Experimento eliminado');
-      render();
-    }
-
-    function updateTestStatus(id, newStatus) {
-      const test = state.tests.find(t => t.id === id);
-      if (test) {
-        test.status = newStatus;
-        showNotification(`Test movido a: ${newStatus}`);
-        render();
-      }
-    }
-
     function exportData() {
       const dataStr = JSON.stringify(state, null, 2);
       const blob = new Blob([dataStr], { type: 'application/json' });
@@ -213,7 +177,7 @@
                     class="bg-transparent font-bold text-lg md:text-xl text-dmente-teal focus:outline-none border-b border-transparent hover:border-dmente-emerald/50 focus:border-dmente-teal w-full md:w-96 transition"
                     placeholder="Nombre de la campaña..."
                   />
-                  <p class="text-xs text-slate-400">Herramienta de Control de Experimentos</p>
+                  <p class="text-xs text-slate-400">Herramienta de Control de Experimentos • Dmente Digital</p>
                 </div>
               </div>
               <div class="flex items-center gap-2 flex-wrap">
@@ -230,117 +194,114 @@
             </div>
           </header>
 
+          <!-- BARRA DE PROGRESO HORIZONTAL -->
+          <div class="border-b border-dmente-emerald/20 bg-dmente-deep/50 px-6 py-6">
+            <div class="max-w-7xl mx-auto">
+              <div class="grid grid-cols-6 gap-3">
+                ${[
+                  { n: 1, label: 'Definir Objetivos' },
+                  { n: 2, label: 'Lluvia de Ideas' },
+                  { n: 3, label: 'Priorizar ICE' },
+                  { n: 4, label: 'Planear Tests' },
+                  { n: 5, label: 'Ejecutar Tests' },
+                  { n: 6, label: 'Análisis' }
+                ].map((step) => `
+                  <button
+                    onclick="state.activeStep = ${step.n}; render();"
+                    class="flex flex-col items-center gap-2 p-3 rounded-xl transition ${
+                      state.activeStep === step.n
+                        ? 'bg-dmente-teal/20 border border-dmente-teal/40'
+                        : 'bg-slate-900/30 border border-transparent hover:bg-slate-900/60'
+                    }"
+                  >
+                    <span class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                      state.activeStep === step.n
+                        ? 'bg-dmente-teal text-dmente-deep'
+                        : 'bg-dmente-emerald/40 text-dmente-teal'
+                    }">
+                      ${step.n < state.activeStep ? '✅' : step.n === state.activeStep ? '🎯' : step.n}
+                    </span>
+                    <div class="text-xs font-semibold text-center text-dmente-white">
+                      ${step.label}
+                    </div>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
           <!-- CONTENIDO PRINCIPAL -->
-          <main class="max-w-7xl mx-auto w-full p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <main class="max-w-7xl mx-auto w-full p-4 md:p-6">
 
-            <!-- SECCIÓN IZQUIERDA -->
-            <section class="lg:col-span-5 flex flex-col gap-6">
+            <!-- ENCABEZADO DEL PASO -->
+            <div class="flex items-center gap-4 mb-8 pb-6 border-b border-dmente-emerald/20">
+              <div class="bg-dmente-teal/20 border border-dmente-teal/40 text-dmente-teal p-3 rounded-xl text-2xl">
+                ${['', '🎯', '💡', '📊', '📋', '🧪', '📈'][state.activeStep]}
+              </div>
+              <div class="flex-1">
+                <span class="text-xs font-bold uppercase tracking-wider text-dmente-teal block mb-2">Paso ${state.activeStep} de 6</span>
+                <h1 class="text-3xl md:text-4xl font-black text-dmente-white">
+                  ${[
+                    '',
+                    'Definir Objetivos de la Campaña',
+                    'Lluvia de Ideas (Brainstorm)',
+                    'Priorizar Ideas con Matriz ICE',
+                    'Planear Tests y Experimentos',
+                    'Ejecución y Seguimiento de Tests',
+                    'Análisis de Resultados de Experimentos'
+                  ][state.activeStep]}
+                </h1>
+              </div>
+            </div>
 
-              <!-- MAPA INTERACTIVO -->
-              <div class="bg-dmente-deep/50 border border-dmente-emerald/20 rounded-2xl p-6">
-                <h2 class="text-sm font-semibold text-slate-400 tracking-wider uppercase mb-6 text-center">
-                  MAPA DE PROCESO DE GROWTH HACKING
-                </h2>
+            <!-- GRID: Métricas + Contenido + Asistente IA -->
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
 
-                <div class="relative w-80 h-80 mx-auto flex items-center justify-center">
-                  <svg class="absolute w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="38" fill="none" stroke="#156367" stroke-width="2" />
-                    <circle cx="50" cy="50" r="38" fill="none" stroke="#2bebd2" stroke-width="2" opacity="0.5" />
-                  </svg>
-
-                  <div class="absolute w-36 h-36 bg-dmente-deep rounded-full border border-dmente-emerald/40 flex flex-col items-center justify-center p-3 shadow-inner">
-                    <div class="text-3xl">🚀</div>
-                    <div class="text-xs font-black text-dmente-teal mt-2">DMENTE</div>
-                    <div class="text-[8px] text-slate-500">GROWTH LAB</div>
+              <!-- MÉTRICAS SIDEBAR -->
+              <aside class="lg:col-span-1">
+                <div class="bg-dmente-deep/50 border border-dmente-emerald/20 rounded-2xl p-4 sticky top-24 space-y-3">
+                  <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Métricas</div>
+                  <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20 text-center">
+                    <div class="text-xs text-slate-400 mb-1">Total Ideas</div>
+                    <div class="text-3xl font-black text-dmente-teal">${state.ideas.length}</div>
+                  </div>
+                  <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20 text-center">
+                    <div class="text-xs text-slate-400 mb-1">En Test</div>
+                    <div class="text-3xl font-black text-dmente-sky">${state.tests.filter(t => t.status === 'En Ejecución').length}</div>
+                  </div>
+                  <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20 text-center">
+                    <div class="text-xs text-slate-400 mb-1">Finalizados</div>
+                    <div class="text-3xl font-black text-dmente-magenta">${state.tests.filter(t => t.status === 'Finalizado').length}</div>
                   </div>
                 </div>
+              </aside>
 
-                <div class="w-full mt-6 space-y-2 border-t border-dmente-emerald/20 pt-4">
-                  <div class="text-xs text-slate-500 font-bold mb-2">Fases del Embudo</div>
-                  ${[
-                    { n: 1, label: 'Definir Objetivos', desc: 'Metas e hipótesis iniciales' },
-                    { n: 2, label: 'Lluvia de Ideas', desc: 'Propuestas de mejora' },
-                    { n: 3, label: 'Priorizar Ideas (ICE)', desc: 'Elegir pruebas de impacto' },
-                    { n: 4, label: 'Planear Experimentos', desc: 'Definir hipótesis claras' },
-                    { n: 5, label: 'Ejecutar Tests', desc: 'Seguimiento de pruebas vivas' },
-                    { n: 6, label: 'Análisis de Resultados', desc: 'Validación y toma de decisiones' }
-                  ].map((step) => `
-                    <button
-                      onclick="state.activeStep = ${step.n}; render();"
-                      class="w-full flex items-center justify-between p-2.5 rounded-xl transition text-left ${
-                        state.activeStep === step.n
-                          ? 'bg-dmente-teal/20 border border-dmente-teal/40 text-dmente-teal'
-                          : 'bg-slate-900/30 border border-transparent hover:bg-slate-900/60'
-                      }"
-                    >
-                      <div class="flex items-center gap-3">
-                        <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                          state.activeStep === step.n ? 'bg-dmente-teal text-dmente-deep' : 'bg-dmente-emerald/40 text-dmente-teal'
-                        }">
-                          ${step.n}
-                        </span>
-                        <div>
-                          <div class="text-xs font-bold">${step.label}</div>
-                          <div class="text-[10px] text-slate-500">${step.desc}</div>
-                        </div>
-                      </div>
-                      <div class="text-xs">
-                        ${step.n < state.activeStep ? '✅' : step.n === state.activeStep ? '🎯' : '⏳'}
-                      </div>
-                    </button>
-                  `).join('')}
-                </div>
-              </div>
+              <!-- CONTENIDO PRINCIPAL -->
+              <section class="lg:col-span-3 bg-dmente-deep/45 border border-dmente-emerald/20 rounded-2xl p-6 shadow-xl">
+                <!-- CONTENIDO DINÁMICO -->
+                ${state.activeStep === 1 ? renderStep1() : ''}
+                ${state.activeStep === 2 ? renderStep2() : ''}
+                ${state.activeStep === 3 ? renderStep3() : ''}
+                ${state.activeStep === 4 ? renderStep4() : ''}
+                ${state.activeStep === 5 ? renderStep5() : ''}
+                ${state.activeStep === 6 ? renderStep6() : ''}
+              </section>
 
-              <!-- MÉTRICAS -->
-              <div class="bg-dmente-deep/50 border border-dmente-emerald/20 rounded-2xl p-4 grid grid-cols-3 gap-2 text-center">
-                <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20">
-                  <div class="text-xs text-slate-400">Total Ideas</div>
-                  <div class="text-xl font-bold text-dmente-teal">${state.ideas.length}</div>
+              <!-- ASISTENTE DE IA SIDEBAR -->
+              <aside class="lg:col-span-1">
+                <div class="bg-gradient-to-b from-dmente-magenta/10 to-dmente-teal/10 border border-dmente-magenta/30 rounded-2xl p-5 sticky top-24 space-y-4">
+                  <div class="flex items-center gap-2 mb-4">
+                    <div class="text-2xl">🤖</div>
+                    <div>
+                      <div class="text-xs font-bold text-dmente-magenta uppercase tracking-wider">Asistente IA</div>
+                      <div class="text-[10px] text-slate-400">Dmente Coach</div>
+                    </div>
+                  </div>
+                  ${renderAIAssistant()}
                 </div>
-                <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20">
-                  <div class="text-xs text-slate-400">En Test</div>
-                  <div class="text-xl font-bold text-dmente-sky">${state.tests.filter(t => t.status === 'En Ejecución').length}</div>
-                </div>
-                <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20">
-                  <div class="text-xs text-slate-400">Analizados</div>
-                  <div class="text-xl font-bold text-dmente-magenta">${state.tests.filter(t => t.status === 'Finalizado').length}</div>
-                </div>
-              </div>
-            </section>
+              </aside>
+            </div>
 
-            <!-- SECCIÓN DERECHA -->
-            <section class="lg:col-span-7 bg-dmente-deep/45 border border-dmente-emerald/20 rounded-2xl p-6 shadow-xl">
-
-              <div class="flex items-center gap-3 border-b border-dmente-emerald/20 pb-4 mb-6">
-                <div class="bg-dmente-teal/20 border border-dmente-teal/40 text-dmente-teal p-2.5 rounded-xl">
-                  ${['', '🎯', '💡', '📊', '📋', '🧪', '📈'][state.activeStep]}
-                </div>
-                <div>
-                  <span class="text-[10px] font-bold uppercase tracking-wider text-dmente-teal">Paso ${state.activeStep} de 6</span>
-                  <h1 class="text-xl font-extrabold text-dmente-white">
-                    ${[
-                      '',
-                      'Definir Objetivos de la Campaña',
-                      'Lluvia de Ideas (Brainstorm)',
-                      'Priorizar Ideas con Matriz ICE',
-                      'Planear Tests y Experimentos',
-                      'Ejecución y Seguimiento de Tests',
-                      'Análisis de Resultados de Experimentos'
-                    ][state.activeStep]}
-                  </h1>
-                </div>
-              </div>
-
-              <!-- CONTENIDO DINÁMICO -->
-              ${state.activeStep === 1 ? renderStep1() : ''}
-              ${state.activeStep === 2 ? renderStep2() : ''}
-              ${state.activeStep === 3 ? renderStep3() : ''}
-              ${state.activeStep === 4 ? renderStep4() : ''}
-              ${state.activeStep === 5 ? renderStep5() : ''}
-              ${state.activeStep === 6 ? renderStep6() : ''}
-
-            </section>
           </main>
         </div>
       `;
@@ -470,80 +431,33 @@
     }
 
     function renderStep4() {
+      const sorted = [...state.ideas].sort((a, b) => calculateIceScore(b) - calculateIceScore(a));
       return `
         <div class="space-y-4">
-          <p class="text-slate-400 text-sm">Convierte tus ideas prioritarias en experimentos con hipótesis científicas.</p>
-
-          <!-- Instrucciones -->
-          <div class="bg-dmente-teal/10 border border-dmente-teal/20 p-3 rounded-xl text-xs text-dmente-teal">
-            <span class="font-bold">📝 Cómo crear un test:</span>
-            <ol class="list-decimal list-inside mt-2 text-slate-300 space-y-1">
-              <li>Selecciona una idea del banco (de los pasos anteriores)</li>
-              <li>Escribe la hipótesis: "Si... entonces... porque..."</li>
-              <li>Define qué métrica medirás (Ej: Tasa conversión, Bounce rate)</li>
-              <li>Especifica duración y responsable</li>
-              <li>Click "🚀 Crear Experimento"</li>
-            </ol>
+          <p class="text-slate-400 text-sm">Formaliza tus ideas como experimentos científicos.</p>
+          <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20">
+            <p class="text-xs text-slate-300 mb-3">Tienes ${state.ideas.length} ideas en el banco.</p>
+            <p class="text-xs text-slate-400">Tienes ${state.tests.length} experimentos planificados.</p>
           </div>
-
-          <!-- Formulario para crear test -->
-          <form onsubmit="event.preventDefault(); const ideaId = document.getElementById('testIdeaId').value; const hypothesis = document.getElementById('testHypothesis').value; const metric = document.getElementById('testMetric').value; const duration = document.getElementById('testDuration').value; const responsible = document.getElementById('testResponsible').value; addTest(ideaId, hypothesis, metric, duration, responsible); document.getElementById('testIdeaId').value = ''; document.getElementById('testHypothesis').value = ''; document.getElementById('testMetric').value = ''; document.getElementById('testDuration').value = '7 días'; document.getElementById('testResponsible').value = '';" class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20 space-y-4">
-
-            <div>
-              <label class="block text-xs font-semibold text-slate-300 mb-1">Selecciona una Idea</label>
-              <select id="testIdeaId" class="w-full bg-dmente-deep border border-dmente-emerald/20 focus:border-dmente-teal rounded-lg p-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-dmente-teal text-dmente-white" required>
-                <option value="">-- Elige una idea --</option>
-                ${state.ideas.map(idea => `<option value="${idea.id}">${idea.title} (ICE: ${calculateIceScore(idea)})</option>`).join('')}
-              </select>
-            </div>
-
-            <div>
-              <label class="block text-xs font-semibold text-slate-300 mb-1">Hipótesis (Formato: Si... entonces... porque...)</label>
-              <textarea id="testHypothesis" placeholder="Ej: Si mostramos un popup con oferta de 15% desc en salida, entonces aumentaremos conversiones en 12% porque reducimos el abandono." class="w-full bg-dmente-deep border border-dmente-emerald/20 focus:border-dmente-teal rounded-lg p-3 text-xs focus:outline-none focus:ring-1 focus:ring-dmente-teal text-dmente-white min-h-[70px]" required></textarea>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <div>
-                <label class="block text-xs font-semibold text-slate-300 mb-1">Métrica a Medir</label>
-                <input id="testMetric" type="text" placeholder="Ej: Tasa de conversión" class="w-full bg-dmente-deep border border-dmente-emerald/20 focus:border-dmente-teal rounded-lg p-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-dmente-teal text-dmente-white" required />
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-300 mb-1">Duración</label>
-                <input id="testDuration" type="text" value="7 días" placeholder="Ej: 14 días" class="w-full bg-dmente-deep border border-dmente-emerald/20 focus:border-dmente-teal rounded-lg p-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-dmente-teal text-dmente-white" />
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-300 mb-1">Responsable</label>
-                <input id="testResponsible" type="text" placeholder="Ej: Laura Copywriter" class="w-full bg-dmente-deep border border-dmente-emerald/20 focus:border-dmente-teal rounded-lg p-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-dmente-teal text-dmente-white" />
-              </div>
-            </div>
-
-            <button type="submit" class="w-full bg-dmente-teal hover:bg-teal-500 text-dmente-deep font-bold p-2.5 rounded-lg text-sm transition">
-              🚀 Crear Experimento
-            </button>
-          </form>
-
-          <!-- Lista de experimentos creados -->
-          <div class="space-y-2">
-            <h3 class="text-xs font-semibold uppercase text-slate-400">Experimentos Planificados (${state.tests.length})</h3>
-            <div class="max-h-64 overflow-y-auto space-y-2">
-              ${state.tests.length === 0 ? '<div class="bg-dmente-deep/40 border border-dashed border-dmente-emerald/20 p-8 rounded-xl text-center text-slate-500 text-sm">No hay experimentos. ¡Crea uno arriba!</div>' : state.tests.map(test => {
-                const idea = state.ideas.find(i => i.id === test.ideaId);
-                return `
-                  <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20 text-xs">
-                    <div class="flex justify-between items-start mb-2">
-                      <div class="font-bold text-dmente-teal">Idea: ${idea ? idea.title : 'No encontrada'}</div>
-                      <button onclick="deleteTest(${test.id})" class="text-slate-500 hover:text-dmente-magenta">🗑️</button>
-                    </div>
-                    <p class="text-slate-400 italic mb-2">"${test.hypothesis}"</p>
-                    <div class="flex justify-between items-center text-[10px] text-slate-500">
-                      <span>📊 ${test.metric}</span>
-                      <span>⏱️ ${test.duration}</span>
-                      <span>👤 ${test.responsible}</span>
-                    </div>
+          <div class="max-h-96 overflow-y-auto space-y-3">
+            ${sorted.length === 0 ? '<div class="text-slate-500 text-sm p-8 text-center">No tienes ideas prioritarias. Vuelve al paso 3 para priorizarlas.</div>' : sorted.map(idea => `
+              <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20 flex flex-col gap-3">
+                <div class="flex items-start justify-between gap-4">
+                  <div class="flex-1">
+                    <div class="text-sm font-bold text-dmente-white">${idea.title}</div>
+                    <span class="text-xs text-slate-400">Canal: ${idea.channel || 'N/A'}</span>
                   </div>
-                `;
-              }).join('')}
-            </div>
+                  <div class="flex-shrink-0 bg-dmente-teal/20 border border-dmente-teal/40 px-3 py-1.5 rounded-lg">
+                    <div class="text-[11px] font-bold text-dmente-teal">Score ${calculateIceScore(idea)}/10</div>
+                  </div>
+                </div>
+                <div class="flex gap-2 text-xs">
+                  <span class="bg-dmente-magenta/20 text-dmente-magenta px-2.5 py-1 rounded-md">Impacto: ${idea.impact}</span>
+                  <span class="bg-dmente-sky/20 text-dmente-sky px-2.5 py-1 rounded-md">Confianza: ${idea.confidence}</span>
+                  <span class="bg-dmente-teal/20 text-dmente-teal px-2.5 py-1 rounded-md">Facilidad: ${idea.ease}</span>
+                </div>
+              </div>
+            `).join('')}
           </div>
         </div>
       `;
@@ -552,180 +466,77 @@
     function renderStep5() {
       return `
         <div class="space-y-4">
-          <p class="text-slate-400 text-sm">Mueve tus tests según el estado de ejecución.</p>
+          <p class="text-slate-400 text-sm">Controla tus experimentos en tiempo real.</p>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-
-            <!-- COLUMNA 1: POR EMPEZAR -->
             <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20">
-              <div class="text-xs font-bold text-slate-400 pb-2 mb-3 border-b border-dmente-emerald/20">
-                📋 POR EMPEZAR (${state.tests.filter(t => t.status === 'No Iniciado').length})
-              </div>
-              <div class="space-y-2 max-h-96 overflow-y-auto">
-                ${state.tests.filter(t => t.status === 'No Iniciado').length === 0 ? '<div class="text-[10px] text-slate-500 p-4 text-center">Sin tests</div>' : state.tests.filter(t => t.status === 'No Iniciado').map(test => {
-                  const idea = state.ideas.find(i => i.id === test.ideaId);
-                  return `
-                    <div class="bg-slate-800/50 p-2.5 rounded-lg border border-slate-700 text-[10px] cursor-pointer hover:border-dmente-sky transition">
-                      <p class="font-bold text-slate-300 mb-1">📌 ${idea ? idea.title : 'Test'}</p>
-                      <p class="text-slate-500 text-[9px] mb-1">📊 ${test.metric}</p>
-                      <p class="text-slate-400 line-clamp-2 mb-2 text-[9px]">"${test.hypothesis}"</p>
-                      <button onclick="updateTestStatus(${test.id}, 'En Ejecución')" class="w-full text-xs bg-dmente-sky hover:bg-sky-500 text-dmente-deep font-bold p-1 rounded transition">▶ Iniciar</button>
-                    </div>
-                  `;
-                }).join('')}
+              <div class="text-xs font-bold text-slate-400 pb-2 mb-1">📋 POR EMPEZAR</div>
+              <div class="space-y-2 text-[10px] text-slate-400">
+                ${state.tests.filter(t => t.status === 'No Iniciado').length} tests pendientes
               </div>
             </div>
-
-            <!-- COLUMNA 2: EN EJECUCIÓN -->
             <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20">
-              <div class="text-xs font-bold text-dmente-sky pb-2 mb-3 border-b border-dmente-emerald/20">
-                🧪 EN EJECUCIÓN (${state.tests.filter(t => t.status === 'En Ejecución').length})
-              </div>
-              <div class="space-y-2 max-h-96 overflow-y-auto">
-                ${state.tests.filter(t => t.status === 'En Ejecución').length === 0 ? '<div class="text-[10px] text-slate-500 p-4 text-center">Sin tests</div>' : state.tests.filter(t => t.status === 'En Ejecución').map(test => {
-                  const idea = state.ideas.find(i => i.id === test.ideaId);
-                  return `
-                    <div class="bg-sky-900/30 p-2.5 rounded-lg border border-dmente-sky/40 text-[10px] cursor-pointer hover:border-dmente-sky transition">
-                      <p class="font-bold text-dmente-sky mb-1">📌 ${idea ? idea.title : 'Test'}</p>
-                      <p class="text-slate-500 text-[9px] mb-1">📊 ${test.metric}</p>
-                      <p class="text-slate-400 line-clamp-2 mb-2 text-[9px]">"${test.hypothesis}"</p>
-                      <button onclick="updateTestStatus(${test.id}, 'Finalizado')" class="w-full text-xs bg-dmente-teal hover:bg-teal-500 text-dmente-deep font-bold p-1 rounded transition">✓ Finalizar</button>
-                    </div>
-                  `;
-                }).join('')}
+              <div class="text-xs font-bold text-dmente-sky pb-2 mb-1">🧪 EN EJECUCIÓN</div>
+              <div class="space-y-2 text-[10px] text-slate-400">
+                ${state.tests.filter(t => t.status === 'En Ejecución').length} tests activos
               </div>
             </div>
-
-            <!-- COLUMNA 3: FINALIZADO -->
             <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20">
-              <div class="text-xs font-bold text-dmente-teal pb-2 mb-3 border-b border-dmente-emerald/20">
-                📊 FINALIZADO (${state.tests.filter(t => t.status === 'Finalizado').length})
-              </div>
-              <div class="space-y-2 max-h-96 overflow-y-auto">
-                ${state.tests.filter(t => t.status === 'Finalizado').length === 0 ? '<div class="text-[10px] text-slate-500 p-4 text-center">Sin tests</div>' : state.tests.filter(t => t.status === 'Finalizado').map(test => {
-                  const idea = state.ideas.find(i => i.id === test.ideaId);
-                  return `
-                    <div class="bg-teal-900/30 p-2.5 rounded-lg border border-dmente-teal/40 text-[10px]">
-                      <p class="font-bold text-dmente-teal mb-1">📌 ${idea ? idea.title : 'Test'}</p>
-                      <p class="text-slate-500 text-[9px] mb-1">📊 ${test.metric}</p>
-                      <p class="text-slate-400 line-clamp-2 mb-2 text-[9px]">"${test.hypothesis}"</p>
-                      <span class="text-[9px] text-slate-500">✓ Listo para analizar</span>
-                    </div>
-                  `;
-                }).join('')}
+              <div class="text-xs font-bold text-dmente-teal pb-2 mb-1">📊 FINALIZADO</div>
+              <div class="space-y-2 text-[10px] text-slate-400">
+                ${state.tests.filter(t => t.status === 'Finalizado').length} tests completados
               </div>
             </div>
-
           </div>
         </div>
       `;
-    }
-
-    function updateTestResult(id, field, value) {
-      const test = state.tests.find(t => t.id === id);
-      if (test) {
-        test[field] = value;
-        render();
-      }
     }
 
     function renderStep6() {
-      const finalized = state.tests.filter(t => t.status === 'Finalizado');
-      const validated = finalized.filter(t => t.validated === 'validated').length;
-      const refuted = finalized.filter(t => t.validated === 'refuted').length;
-
       return `
         <div class="space-y-4">
-          <p class="text-slate-400 text-sm">Registra resultados, valida/refuta hipótesis y toma decisiones estratégicas.</p>
-
-          <!-- Resumen de Resultados -->
-          <div class="grid grid-cols-3 gap-3">
-            <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20 text-center">
-              <div class="text-xs text-slate-400 mb-1">Total Finalizados</div>
-              <div class="text-2xl font-bold text-dmente-teal">${finalized.length}</div>
-            </div>
-            <div class="bg-dmente-deep/60 p-3 rounded-xl border border-emerald-500/30 text-center">
-              <div class="text-xs text-slate-400 mb-1">✅ Validados</div>
-              <div class="text-2xl font-bold text-emerald-400">${validated}</div>
-            </div>
-            <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-magenta/30 text-center">
-              <div class="text-xs text-slate-400 mb-1">❌ Refutados</div>
-              <div class="text-2xl font-bold text-dmente-magenta">${refuted}</div>
-            </div>
+          <p class="text-slate-400 text-sm">Valida resultados y toma decisiones estratégicas.</p>
+          <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20">
+            <p class="text-xs text-slate-300">Tests totales: ${state.tests.length}</p>
+            <p class="text-xs text-slate-300">Finalizados: ${state.tests.filter(t => t.status === 'Finalizado').length}</p>
           </div>
-
-          <!-- Lista de Tests para Analizar -->
-          ${finalized.length === 0 ? `
-            <div class="bg-dmente-deep/40 border border-dashed border-dmente-emerald/20 p-12 rounded-xl text-center text-slate-500 text-sm">
-              No hay tests finalizados. Mueve tests a "Finalizado" en el Paso 5 para analizarlos aquí.
-            </div>
-          ` : `
-            <div class="space-y-3 max-h-96 overflow-y-auto">
-              ${finalized.map(test => {
-                const idea = state.ideas.find(i => i.id === test.ideaId);
-                return `
-                  <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20 space-y-3">
-
-                    <!-- Encabezado -->
-                    <div>
-                      <div class="text-sm font-bold text-dmente-white mb-1">Test #${test.id.toString().slice(-4)} - ${idea ? idea.title : 'Idea'}</div>
-                      <p class="text-xs text-slate-400 italic">"${test.hypothesis}"</p>
-                    </div>
-
-                    <!-- Resultado Numérico -->
-                    <div>
-                      <label class="block text-xs font-semibold text-slate-300 mb-1">Resultado Obtenido</label>
-                      <input
-                        type="text"
-                        value="${test.result}"
-                        onchange="updateTestResult(${test.id}, 'result', this.value)"
-                        placeholder="Ej: +18% conversión, -5% bounce rate"
-                        class="w-full bg-dmente-deep border border-dmente-emerald/20 focus:border-dmente-teal rounded-lg p-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-dmente-teal text-dmente-white"
-                      />
-                    </div>
-
-                    <!-- Validación de Hipótesis -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">¿Hipótesis Validada?</label>
-                        <select
-                          value="${test.validated || ''}"
-                          onchange="updateTestResult(${test.id}, 'validated', this.value || null)"
-                          class="w-full bg-dmente-deep border border-dmente-emerald/20 focus:border-dmente-teal rounded-lg p-2 text-xs focus:outline-none focus:ring-1 focus:ring-dmente-teal text-dmente-white"
-                        >
-                          <option value="">-- Selecciona --</option>
-                          <option value="validated">✅ Validada (Hipótesis Correcta)</option>
-                          <option value="refuted">❌ Refutada (Hipótesis Incorrecta)</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Decisión Estratégica</label>
-                        <select
-                          value="${test.decision}"
-                          onchange="updateTestResult(${test.id}, 'decision', this.value)"
-                          class="w-full bg-dmente-deep border border-dmente-emerald/20 focus:border-dmente-teal rounded-lg p-2 text-xs focus:outline-none focus:ring-1 focus:ring-dmente-teal text-dmente-white"
-                        >
-                          <option value="">-- Elige una decisión --</option>
-                          <option value="Escalar">🚀 Escalar (Invertir más recursos)</option>
-                          <option value="Pivotar">🔄 Pivotar (Cambiar el enfoque)</option>
-                          <option value="Mantener">⏸️ Mantener (Más datos necesarios)</option>
-                          <option value="Descartar">🗑️ Descartar (No funciona)</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <!-- Estado Visual -->
-                    <div class="flex items-center gap-2 text-xs pt-2 border-t border-dmente-emerald/20">
-                      ${test.validated === 'validated' ? '<span class="text-emerald-400 font-bold">✅ VALIDADO</span>' : test.validated === 'refuted' ? '<span class="text-dmente-magenta font-bold">❌ REFUTADO</span>' : '<span class="text-slate-500">⏳ Pendiente validación</span>'}
-                      ${test.decision ? `<span class="text-dmente-teal">→ ${test.decision}</span>` : ''}
-                    </div>
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          `}
         </div>
       `;
+    }
+
+    function renderAIAssistant() {
+      const messages = {
+        1: `<div class="space-y-3 text-xs text-slate-300">
+          <p><strong>Define tus metas SMART:</strong></p>
+          <p class="text-slate-400">Específicas, Medibles, Alcanzables, Relevantes y con Tiempo determinado.</p>
+          <p class="text-dmente-teal mt-2">💡 Una métrica norte clara guía todas tus decisiones de crecimiento.</p>
+        </div>`,
+        2: `<div class="space-y-3 text-xs text-slate-300">
+          <p><strong>Brainstorming sin juicio:</strong></p>
+          <p class="text-slate-400">No hay ideas malas en esta etapa. Captura todos los hacks que se te ocurran.</p>
+          <p class="text-dmente-teal mt-2">💡 La cantidad genera calidad. Busca 50 ideas antes de filtrar.</p>
+        </div>`,
+        3: `<div class="space-y-3 text-xs text-slate-300">
+          <p><strong>Prioriza con ICE:</strong></p>
+          <p class="text-slate-400">Impacto (potencial), Confianza (evidencia), Facilidad (esfuerzo).</p>
+          <p class="text-dmente-teal mt-2">💡 El mejor hack es el que tiene alto impacto y bajo esfuerzo.</p>
+        </div>`,
+        4: `<div class="space-y-3 text-xs text-slate-300">
+          <p><strong>Estructura hipótesis claras:</strong></p>
+          <p class="text-slate-400">Usa: "Si hacemos X, pasará Y porque Z"</p>
+          <p class="text-dmente-teal mt-2">💡 Cada test debe tener un KPI medible y un período definido.</p>
+        </div>`,
+        5: `<div class="space-y-3 text-xs text-slate-300">
+          <p><strong>Monitorea en tiempo real:</strong></p>
+          <p class="text-slate-400">Revisa métricas diariamente. Detecta problemas temprano.</p>
+          <p class="text-dmente-teal mt-2">💡 No esperes hasta el final: ajusta sobre la marcha si es necesario.</p>
+        </div>`,
+        6: `<div class="space-y-3 text-xs text-slate-300">
+          <p><strong>Decisiones basadas en datos:</strong></p>
+          <p class="text-slate-400">Valida resultados, escala lo que funciona, pivota lo que no.</p>
+          <p class="text-dmente-teal mt-2">💡 Un test fallido es aprendizaje. Documenta los insights.</p>
+        </div>`
+      };
+      return messages[state.activeStep] || messages[1];
     }
 
     // Cargar datos y renderizar
@@ -734,4 +545,3 @@
   </script>
 </body>
 </html>
-
