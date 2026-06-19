@@ -194,117 +194,114 @@
             </div>
           </header>
 
+          <!-- BARRA DE PROGRESO HORIZONTAL -->
+          <div class="border-b border-dmente-emerald/20 bg-dmente-deep/50 px-6 py-6">
+            <div class="max-w-7xl mx-auto">
+              <div class="grid grid-cols-6 gap-3">
+                ${[
+                  { n: 1, label: 'Definir Objetivos' },
+                  { n: 2, label: 'Lluvia de Ideas' },
+                  { n: 3, label: 'Priorizar ICE' },
+                  { n: 4, label: 'Planear Tests' },
+                  { n: 5, label: 'Ejecutar Tests' },
+                  { n: 6, label: 'Análisis' }
+                ].map((step) => `
+                  <button
+                    onclick="state.activeStep = ${step.n}; render();"
+                    class="flex flex-col items-center gap-2 p-3 rounded-xl transition ${
+                      state.activeStep === step.n
+                        ? 'bg-dmente-teal/20 border border-dmente-teal/40'
+                        : 'bg-slate-900/30 border border-transparent hover:bg-slate-900/60'
+                    }"
+                  >
+                    <span class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                      state.activeStep === step.n
+                        ? 'bg-dmente-teal text-dmente-deep'
+                        : 'bg-dmente-emerald/40 text-dmente-teal'
+                    }">
+                      ${step.n < state.activeStep ? '✅' : step.n === state.activeStep ? '🎯' : step.n}
+                    </span>
+                    <div class="text-xs font-semibold text-center text-dmente-white">
+                      ${step.label}
+                    </div>
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
           <!-- CONTENIDO PRINCIPAL -->
-          <main class="max-w-7xl mx-auto w-full p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <main class="max-w-7xl mx-auto w-full p-4 md:p-6">
 
-            <!-- SECCIÓN IZQUIERDA -->
-            <section class="lg:col-span-5 flex flex-col gap-6">
+            <!-- ENCABEZADO DEL PASO -->
+            <div class="flex items-center gap-4 mb-8 pb-6 border-b border-dmente-emerald/20">
+              <div class="bg-dmente-teal/20 border border-dmente-teal/40 text-dmente-teal p-3 rounded-xl text-2xl">
+                ${['', '🎯', '💡', '📊', '📋', '🧪', '📈'][state.activeStep]}
+              </div>
+              <div class="flex-1">
+                <span class="text-xs font-bold uppercase tracking-wider text-dmente-teal block mb-2">Paso ${state.activeStep} de 6</span>
+                <h1 class="text-3xl md:text-4xl font-black text-dmente-white">
+                  ${[
+                    '',
+                    'Definir Objetivos de la Campaña',
+                    'Lluvia de Ideas (Brainstorm)',
+                    'Priorizar Ideas con Matriz ICE',
+                    'Planear Tests y Experimentos',
+                    'Ejecución y Seguimiento de Tests',
+                    'Análisis de Resultados de Experimentos'
+                  ][state.activeStep]}
+                </h1>
+              </div>
+            </div>
 
-              <!-- MAPA INTERACTIVO -->
-              <div class="bg-dmente-deep/50 border border-dmente-emerald/20 rounded-2xl p-6">
-                <h2 class="text-sm font-semibold text-slate-400 tracking-wider uppercase mb-6 text-center">
-                  MAPA DE PROCESO DE GROWTH HACKING
-                </h2>
+            <!-- GRID: Métricas + Contenido + Asistente IA -->
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
 
-                <div class="relative w-80 h-80 mx-auto flex items-center justify-center">
-                  <svg class="absolute w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="38" fill="none" stroke="#156367" stroke-width="2" />
-                    <circle cx="50" cy="50" r="38" fill="none" stroke="#2bebd2" stroke-width="2" opacity="0.5" />
-                  </svg>
-
-                  <div class="absolute w-36 h-36 bg-dmente-deep rounded-full border border-dmente-emerald/40 flex flex-col items-center justify-center p-3 shadow-inner">
-                    <div class="text-3xl">🚀</div>
-                    <div class="text-xs font-black text-dmente-teal mt-2">DMENTE</div>
-                    <div class="text-[8px] text-slate-500">GROWTH LAB</div>
+              <!-- MÉTRICAS SIDEBAR -->
+              <aside class="lg:col-span-1">
+                <div class="bg-dmente-deep/50 border border-dmente-emerald/20 rounded-2xl p-4 sticky top-24 space-y-3">
+                  <div class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Métricas</div>
+                  <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20 text-center">
+                    <div class="text-xs text-slate-400 mb-1">Total Ideas</div>
+                    <div class="text-3xl font-black text-dmente-teal">${state.ideas.length}</div>
+                  </div>
+                  <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20 text-center">
+                    <div class="text-xs text-slate-400 mb-1">En Test</div>
+                    <div class="text-3xl font-black text-dmente-sky">${state.tests.filter(t => t.status === 'En Ejecución').length}</div>
+                  </div>
+                  <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20 text-center">
+                    <div class="text-xs text-slate-400 mb-1">Finalizados</div>
+                    <div class="text-3xl font-black text-dmente-magenta">${state.tests.filter(t => t.status === 'Finalizado').length}</div>
                   </div>
                 </div>
+              </aside>
 
-                <div class="w-full mt-6 space-y-2 border-t border-dmente-emerald/20 pt-4">
-                  <div class="text-xs text-slate-500 font-bold mb-2">Fases del Embudo</div>
-                  ${[
-                    { n: 1, label: 'Definir Objetivos', desc: 'Metas e hipótesis iniciales' },
-                    { n: 2, label: 'Lluvia de Ideas', desc: 'Propuestas de mejora' },
-                    { n: 3, label: 'Priorizar Ideas (ICE)', desc: 'Elegir pruebas de impacto' },
-                    { n: 4, label: 'Planear Experimentos', desc: 'Definir hipótesis claras' },
-                    { n: 5, label: 'Ejecutar Tests', desc: 'Seguimiento de pruebas vivas' },
-                    { n: 6, label: 'Análisis de Resultados', desc: 'Validación y toma de decisiones' }
-                  ].map((step) => `
-                    <button
-                      onclick="state.activeStep = ${step.n}; render();"
-                      class="w-full flex items-center justify-between p-2.5 rounded-xl transition text-left ${
-                        state.activeStep === step.n
-                          ? 'bg-dmente-teal/20 border border-dmente-teal/40 text-dmente-teal'
-                          : 'bg-slate-900/30 border border-transparent hover:bg-slate-900/60'
-                      }"
-                    >
-                      <div class="flex items-center gap-3">
-                        <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                          state.activeStep === step.n ? 'bg-dmente-teal text-dmente-deep' : 'bg-dmente-emerald/40 text-dmente-teal'
-                        }">
-                          ${step.n}
-                        </span>
-                        <div>
-                          <div class="text-xs font-bold">${step.label}</div>
-                          <div class="text-[10px] text-slate-500">${step.desc}</div>
-                        </div>
-                      </div>
-                      <div class="text-xs">
-                        ${step.n < state.activeStep ? '✅' : step.n === state.activeStep ? '🎯' : '⏳'}
-                      </div>
-                    </button>
-                  `).join('')}
-                </div>
-              </div>
+              <!-- CONTENIDO PRINCIPAL -->
+              <section class="lg:col-span-3 bg-dmente-deep/45 border border-dmente-emerald/20 rounded-2xl p-6 shadow-xl">
+                <!-- CONTENIDO DINÁMICO -->
+                ${state.activeStep === 1 ? renderStep1() : ''}
+                ${state.activeStep === 2 ? renderStep2() : ''}
+                ${state.activeStep === 3 ? renderStep3() : ''}
+                ${state.activeStep === 4 ? renderStep4() : ''}
+                ${state.activeStep === 5 ? renderStep5() : ''}
+                ${state.activeStep === 6 ? renderStep6() : ''}
+              </section>
 
-              <!-- MÉTRICAS -->
-              <div class="bg-dmente-deep/50 border border-dmente-emerald/20 rounded-2xl p-4 grid grid-cols-3 gap-2 text-center">
-                <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20">
-                  <div class="text-xs text-slate-400">Total Ideas</div>
-                  <div class="text-xl font-bold text-dmente-teal">${state.ideas.length}</div>
+              <!-- ASISTENTE DE IA SIDEBAR -->
+              <aside class="lg:col-span-1">
+                <div class="bg-gradient-to-b from-dmente-magenta/10 to-dmente-teal/10 border border-dmente-magenta/30 rounded-2xl p-5 sticky top-24 space-y-4">
+                  <div class="flex items-center gap-2 mb-4">
+                    <div class="text-2xl">🤖</div>
+                    <div>
+                      <div class="text-xs font-bold text-dmente-magenta uppercase tracking-wider">Asistente IA</div>
+                      <div class="text-[10px] text-slate-400">Dmente Coach</div>
+                    </div>
+                  </div>
+                  ${renderAIAssistant()}
                 </div>
-                <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20">
-                  <div class="text-xs text-slate-400">En Test</div>
-                  <div class="text-xl font-bold text-dmente-sky">${state.tests.filter(t => t.status === 'En Ejecución').length}</div>
-                </div>
-                <div class="bg-dmente-deep/60 p-3 rounded-xl border border-dmente-emerald/20">
-                  <div class="text-xs text-slate-400">Analizados</div>
-                  <div class="text-xl font-bold text-dmente-magenta">${state.tests.filter(t => t.status === 'Finalizado').length}</div>
-                </div>
-              </div>
-            </section>
+              </aside>
+            </div>
 
-            <!-- SECCIÓN DERECHA -->
-            <section class="lg:col-span-7 bg-dmente-deep/45 border border-dmente-emerald/20 rounded-2xl p-6 shadow-xl">
-
-              <div class="flex items-center gap-3 border-b border-dmente-emerald/20 pb-4 mb-6">
-                <div class="bg-dmente-teal/20 border border-dmente-teal/40 text-dmente-teal p-2.5 rounded-xl">
-                  ${['', '🎯', '💡', '📊', '📋', '🧪', '📈'][state.activeStep]}
-                </div>
-                <div>
-                  <span class="text-[10px] font-bold uppercase tracking-wider text-dmente-teal">Paso ${state.activeStep} de 6</span>
-                  <h1 class="text-xl font-extrabold text-dmente-white">
-                    ${[
-                      '',
-                      'Definir Objetivos de la Campaña',
-                      'Lluvia de Ideas (Brainstorm)',
-                      'Priorizar Ideas con Matriz ICE',
-                      'Planear Tests y Experimentos',
-                      'Ejecución y Seguimiento de Tests',
-                      'Análisis de Resultados de Experimentos'
-                    ][state.activeStep]}
-                  </h1>
-                </div>
-              </div>
-
-              <!-- CONTENIDO DINÁMICO -->
-              ${state.activeStep === 1 ? renderStep1() : ''}
-              ${state.activeStep === 2 ? renderStep2() : ''}
-              ${state.activeStep === 3 ? renderStep3() : ''}
-              ${state.activeStep === 4 ? renderStep4() : ''}
-              ${state.activeStep === 5 ? renderStep5() : ''}
-              ${state.activeStep === 6 ? renderStep6() : ''}
-
-            </section>
           </main>
         </div>
       `;
@@ -434,6 +431,7 @@
     }
 
     function renderStep4() {
+      const sorted = [...state.ideas].sort((a, b) => calculateIceScore(b) - calculateIceScore(a));
       return `
         <div class="space-y-4">
           <p class="text-slate-400 text-sm">Formaliza tus ideas como experimentos científicos.</p>
@@ -441,8 +439,25 @@
             <p class="text-xs text-slate-300 mb-3">Tienes ${state.ideas.length} ideas en el banco.</p>
             <p class="text-xs text-slate-400">Tienes ${state.tests.length} experimentos planificados.</p>
           </div>
-          <div class="bg-dmente-teal/10 border border-dmente-teal/20 p-4 rounded-xl text-xs text-dmente-teal">
-            <span class="font-bold">💡 Paso 4:</span> Estructura tus hipótesis aquí (próximas mejoras)
+          <div class="max-h-96 overflow-y-auto space-y-3">
+            ${sorted.length === 0 ? '<div class="text-slate-500 text-sm p-8 text-center">No tienes ideas prioritarias. Vuelve al paso 3 para priorizarlas.</div>' : sorted.map(idea => `
+              <div class="bg-dmente-deep/60 p-4 rounded-xl border border-dmente-emerald/20 flex flex-col gap-3">
+                <div class="flex items-start justify-between gap-4">
+                  <div class="flex-1">
+                    <div class="text-sm font-bold text-dmente-white">${idea.title}</div>
+                    <span class="text-xs text-slate-400">Canal: ${idea.channel || 'N/A'}</span>
+                  </div>
+                  <div class="flex-shrink-0 bg-dmente-teal/20 border border-dmente-teal/40 px-3 py-1.5 rounded-lg">
+                    <div class="text-[11px] font-bold text-dmente-teal">Score ${calculateIceScore(idea)}/10</div>
+                  </div>
+                </div>
+                <div class="flex gap-2 text-xs">
+                  <span class="bg-dmente-magenta/20 text-dmente-magenta px-2.5 py-1 rounded-md">Impacto: ${idea.impact}</span>
+                  <span class="bg-dmente-sky/20 text-dmente-sky px-2.5 py-1 rounded-md">Confianza: ${idea.confidence}</span>
+                  <span class="bg-dmente-teal/20 text-dmente-teal px-2.5 py-1 rounded-md">Facilidad: ${idea.ease}</span>
+                </div>
+              </div>
+            `).join('')}
           </div>
         </div>
       `;
@@ -486,6 +501,42 @@
           </div>
         </div>
       `;
+    }
+
+    function renderAIAssistant() {
+      const messages = {
+        1: `<div class="space-y-3 text-xs text-slate-300">
+          <p><strong>Define tus metas SMART:</strong></p>
+          <p class="text-slate-400">Específicas, Medibles, Alcanzables, Relevantes y con Tiempo determinado.</p>
+          <p class="text-dmente-teal mt-2">💡 Una métrica norte clara guía todas tus decisiones de crecimiento.</p>
+        </div>`,
+        2: `<div class="space-y-3 text-xs text-slate-300">
+          <p><strong>Brainstorming sin juicio:</strong></p>
+          <p class="text-slate-400">No hay ideas malas en esta etapa. Captura todos los hacks que se te ocurran.</p>
+          <p class="text-dmente-teal mt-2">💡 La cantidad genera calidad. Busca 50 ideas antes de filtrar.</p>
+        </div>`,
+        3: `<div class="space-y-3 text-xs text-slate-300">
+          <p><strong>Prioriza con ICE:</strong></p>
+          <p class="text-slate-400">Impacto (potencial), Confianza (evidencia), Facilidad (esfuerzo).</p>
+          <p class="text-dmente-teal mt-2">💡 El mejor hack es el que tiene alto impacto y bajo esfuerzo.</p>
+        </div>`,
+        4: `<div class="space-y-3 text-xs text-slate-300">
+          <p><strong>Estructura hipótesis claras:</strong></p>
+          <p class="text-slate-400">Usa: "Si hacemos X, pasará Y porque Z"</p>
+          <p class="text-dmente-teal mt-2">💡 Cada test debe tener un KPI medible y un período definido.</p>
+        </div>`,
+        5: `<div class="space-y-3 text-xs text-slate-300">
+          <p><strong>Monitorea en tiempo real:</strong></p>
+          <p class="text-slate-400">Revisa métricas diariamente. Detecta problemas temprano.</p>
+          <p class="text-dmente-teal mt-2">💡 No esperes hasta el final: ajusta sobre la marcha si es necesario.</p>
+        </div>`,
+        6: `<div class="space-y-3 text-xs text-slate-300">
+          <p><strong>Decisiones basadas en datos:</strong></p>
+          <p class="text-slate-400">Valida resultados, escala lo que funciona, pivota lo que no.</p>
+          <p class="text-dmente-teal mt-2">💡 Un test fallido es aprendizaje. Documenta los insights.</p>
+        </div>`
+      };
+      return messages[state.activeStep] || messages[1];
     }
 
     // Cargar datos y renderizar
